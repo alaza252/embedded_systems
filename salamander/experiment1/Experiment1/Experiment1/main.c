@@ -1,16 +1,46 @@
 /*
  * Experiment1.c
+ *
+ * Created: 9/11/2023 2:40:46 PM
+ * Author : sjsmdd
  */ 
 
 #include <avr/io.h>
+#include "board.h"
+#include "util/delay.h"
 
+void ledInit(void);
+void ledOn(void);
+void ledOff(void);
 
 int main(void)
 {
-    /* Replace with your application code */
-    while (1) 
-    {
-		//do something
-    }
+	//init LED
+	ledInit();
+
+	while(1)
+	{
+		ledOn();
+		_delay_ms(500);
+		ledOff();
+		_delay_ms(500);
+	}
+}
+
+
+void ledInit(void)
+{
+	DDRC |= (1<<7);
+	ledOff();
+}
+
+void ledOn(void)
+{
+	PORTC |= (1<<7);
+}
+
+void ledOff(void)
+{
+	PORTC &= ~(1<<7);
 }
 
