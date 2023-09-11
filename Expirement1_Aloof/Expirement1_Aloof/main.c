@@ -6,6 +6,9 @@
  */ 
 
 #include <avr/io.h>
+//#include <board.h>
+#include <GPIO_inputs.h>
+#include <GPIO_outputs.h>
 
 
 int main(void)
