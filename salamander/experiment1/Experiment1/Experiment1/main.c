@@ -30,17 +30,17 @@ int main(void)
 
 void ledInit(void)
 {
-	DDRC |= (1<<7);
+	LED0_REG->DDR_REG  |= LED0_PIN_MASK;
 	ledOff();
 }
 
 void ledOn(void)
 {
-	PORTC |= (1<<7);
+	LED0_REG->PORT_REG |= LED0_PIN_MASK;
 }
 
 void ledOff(void)
 {
-	PORTC &= ~(1<<7);
+	LED0_REG->PORT_REG &= ~LED0_PIN_MASK;
 }
 
