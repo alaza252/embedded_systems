@@ -5,9 +5,9 @@
  * Author : sjsmdd
  */ 
 
-#include <avr/io.h>
 #include "board.h"
-#include "util/delay.h"
+#include <avr/io.h>
+#include <util/delay.h>
 
 void ledInit(void);
 void ledOn(void);
@@ -21,9 +21,9 @@ int main(void)
 	while(1)
 	{
 		ledOn();
-		_delay_ms(500);
+		_delay_ms(1000);
 		ledOff();
-		_delay_ms(500);
+		_delay_ms(4000);
 	}
 }
 
@@ -36,11 +36,10 @@ void ledInit(void)
 
 void ledOn(void)
 {
-	LED0_REG->PORT_REG |= LED0_PIN_MASK;
+	LED0_REG->PORT_REG &= ~LED0_PIN_MASK;
 }
 
 void ledOff(void)
 {
-	LED0_REG->PORT_REG &= ~LED0_PIN_MASK;
+	LED0_REG->PORT_REG |= LED0_PIN_MASK;
 }
-
