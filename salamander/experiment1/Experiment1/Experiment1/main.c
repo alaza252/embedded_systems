@@ -5,41 +5,34 @@
  * Author : sjsmdd
  */ 
 
+
 #include "board.h"
+#include "leds.h"
 #include <avr/io.h>
 #include <util/delay.h>
 
-void ledInit(void);
-void ledOn(void);
-void ledOff(void);
 
 int main(void)
 {
-	//init LED
-	ledInit();
+	//init LEDs
+	gpio_led_init(LED0_REG, LED0_PIN_MASK);
+	gpio_led_init(LED1_REG, LED1_PIN_MASK);
+	gpio_led_init(LED2_REG, LED2_PIN_MASK);
+	gpio_led_init(LED3_REG, LED3_PIN_MASK);
 
 	while(1)
 	{
-		ledOn();
-		_delay_ms(1000);
-		ledOff();
-		_delay_ms(4000);
+		gpio_led_on(LED0_REG, LED0_PIN_MASK);
+		gpio_led_on(LED1_REG, LED1_PIN_MASK);
+		gpio_led_on(LED2_REG, LED2_PIN_MASK);
+		gpio_led_on(LED3_REG, LED3_PIN_MASK);
+		_delay_ms(100);
+		gpio_led_off(LED0_REG, LED0_PIN_MASK);
+		gpio_led_off(LED1_REG, LED1_PIN_MASK);
+		gpio_led_off(LED2_REG, LED2_PIN_MASK);
+		gpio_led_off(LED3_REG, LED3_PIN_MASK);
+		_delay_ms(400);
 	}
 }
 
 
-void ledInit(void)
-{
-	LED0_REG->DDR_REG  |= LED0_PIN_MASK;
-	ledOff();
-}
-
-void ledOn(void)
-{
-	LED0_REG->PORT_REG &= ~LED0_PIN_MASK;
-}
-
-void ledOff(void)
-{
-	LED0_REG->PORT_REG |= LED0_PIN_MASK;
-}
