@@ -2,7 +2,7 @@
  * board.h
  *
  * Created: 9/11/2023 2:45:19 PM
- *  Author: sjsmdd
+ * Author: Sam Stockmann, Lavender Shannon
  */
 
 

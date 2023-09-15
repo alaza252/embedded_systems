@@ -2,7 +2,7 @@
  * leds.h
  *
  * Created: 9/13/2023 2:26:24 PM
- *  Author: sjsmdd
+ * Author: Sam Stockmann, Lavender Shannon
  */
 
 

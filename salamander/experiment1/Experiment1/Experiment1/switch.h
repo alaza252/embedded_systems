@@ -1,3 +1,10 @@
+/*
+ * leds.c
+ *
+ * Created: 9/15/2023 2:02:56 PM
+ * Author: Sam Stockmann, Lavender Shannon
+ */
+
 
 #ifndef SWITCH_H
 #define SWITCH_H
@@ -19,6 +26,7 @@
 
 void gpio_switch_init(volatile GpioPort_t *port_addr, uint8_t pin_mask);
 uint8_t gpio_switch_pressed(volatile GpioPort_t *port_addr, uint8_t pin_mask);
+uint8_t read_switch(volatile GpioPort_t *port_addr, uint8_t pin_mask);
 
 
 #endif
