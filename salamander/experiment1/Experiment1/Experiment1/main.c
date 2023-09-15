@@ -57,6 +57,7 @@ int main(void)
 				_delay_ms(100);
 				gpio_led_off(LED0_REG, LED0_PIN_MASK);
 				_delay_ms(400);
+				break;
 		}
 	}
 }
