@@ -9,6 +9,8 @@
 #ifndef LEDS_H
 #define LEDS_H
 
+#include "board.h"
+
 #define LED0_REG ((volatile GpioPort_t *) & PINC)
 #define LED0_PIN_MASK (1<<7)
 
@@ -20,8 +22,6 @@
 
 #define LED3_REG ((volatile GpioPort_t *) & PINA)
 #define LED3_PIN_MASK (1<<7)
-
-#include "board.h"
 
 
 void gpio_led_init(volatile GpioPort_t *port_addr, uint8_t pin_mask);
