@@ -8,6 +8,7 @@
 
 #ifndef GPIO_OUTPUTS_H_
 #define GPIO_OUTPUTS_H_
+#include "board.h"
 
 
 void GPIO_Output_init( volatile GPIO_t * port_addr, uint8_t pinmask);

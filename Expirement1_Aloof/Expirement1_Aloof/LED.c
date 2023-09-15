@@ -5,23 +5,28 @@
  *  Author: dnsdyy
  */ 
 
-#include <GPIO_outputs.h>
-#include <LED.h>
+#include "GPIO_outputs.h"
+#include "LED.h"
 
 
-LEDS_init(volatile GPIO_t * port_addr, uint8_t led_pin)
+
+
+
+
+
+void LEDS_init(volatile GPIO_t * port_addr, uint8_t led_pin)
 {
 	GPIO_Output_init(port_addr, led_pin);
 	GPIO_Output_set(port_addr,led_pin);
-	
+	LEDS_OFF(port_addr,led_pin);	
 }
 
-LEDS_ON(volatile GPIO_t * port_addr, uint8_t led_pin)
+void LEDS_ON(volatile GPIO_t * port_addr, uint8_t led_pin)
 {
 	GPIO_Output_clear(port_addr,led_pin);
 }
 
-LEDS_OFF(volatile GPIO_t * port_addr, uint8_t led_pin)
+void LEDS_OFF(volatile GPIO_t * port_addr, uint8_t led_pin)
 {
 	GPIO_Output_set(port_addr,led_pin);
 }

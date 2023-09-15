@@ -10,12 +10,19 @@
 #define LED_H_
 
 #define LED0 (1<<7)
+#define LED_bit (1<<7)
+char LED_State_g;
+
+#include "Board.h"
 
 
+void LED_Flash_Init();
+void LED_Flash_Change_State();
 
-LEDS_init(volatile GPIO_t * port_addr, uint8_t led_pin);
-LEDS_ON(volatile GPIO_t * port_addr, uint8_t led_pin);
-LEDS_OFF(volatile GPIO_t * port_addr, uint8_t led_pin);
+
+void LEDS_init(volatile GPIO_t * port_addr, uint8_t led_pin);
+void LEDS_ON(volatile GPIO_t * port_addr, uint8_t led_pin);
+void LEDS_OFF(volatile GPIO_t * port_addr, uint8_t led_pin);
 
 
 
