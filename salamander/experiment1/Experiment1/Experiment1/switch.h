@@ -1,6 +1,6 @@
 
-#ifndef LEDS_H
-#define LEDS_H
+#ifndef SWITCH_H
+#define SWITCH_H
 
 #include "board.h"
 

@@ -40,10 +40,13 @@ void gpio_input_init(volatile GpioPort_t *port_addr, uint8_t pin_mask, uint8_t p
 		port_addr->PORT_REG &= ~pin_mask;
 	}
 }
+
 uint8_t gpio_input_read_port(volatile GpioPort_t *port_addr, uint8_t pin_mask)
 {
-  return port_addr->GPIO_PIN & pin_mask;
+	return port_addr->PIN_REG & pin_mask;
 }
-uint8_t gpio_input_read_pin(volatile GpioPort_t *port_addr, uint8_t pin_mask) {
-  return gpio_input_read_port(port_addr, pin_mask) != 0 ? 1 : 0;
+
+uint8_t gpio_input_read_pin(volatile GpioPort_t *port_addr, uint8_t pin_mask)
+{
+	return gpio_input_read_port(port_addr, pin_mask) != 0 ? 1 : 0;
 }
