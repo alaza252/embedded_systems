@@ -12,10 +12,24 @@
 #include "board.h"
 
 
+/**
+ * Initializes the given pin(s) as output pins
+ */
 void gpio_output_init(volatile GpioPort_t *port_addr, uint8_t pin_mask);
+
+/**
+ * Sets the given output pin(s) to high
+ */
 void gpio_output_set(volatile GpioPort_t *port_addr, uint8_t pin_mask);
+
+/**
+ * Sets the given output pin(s) to low
+ */
 void gpio_output_clear(volatile GpioPort_t *port_addr, uint8_t pin_mask);
 
+/**
+ * Initializes the given pin(s) as input pins
+ */
 void gpio_input_init(volatile GpioPort_t *port_addr, uint8_t pin_mask, uint8_t pullup_enable);
 /**
  * Returns the value of the port logical AND'd with the pin_mask

@@ -16,10 +16,13 @@
 
 typedef struct portRegs
 {
+	/** Used to read the value of a pin when configured as an input */
 	volatile uint8_t PIN_REG;
+	/** Used to configure what pins are outputs and what pins are inputs*/
 	volatile uint8_t DDR_REG;
+	/** Used to control the output when a pin is in output mode, and is used to control the pullup resistor when configured for input*/
 	volatile uint8_t PORT_REG;
-	} GpioPort_t;
+} GpioPort_t;
 	
 
 #endif
