@@ -2,71 +2,73 @@
  * Expirement1_Aloof.c
  *
  * Created: 9/11/2023 2:37:32 PM
- * Author : dnsdyy
+ * Authors: Drew Schulte and Alisa Lazareva
+ 
+ 
+	Our task for this assignment was to get the board to start off not flashing
+		and once pressed rotate through 2 other states with every button press.
+		those states in order go Off->On->Flashing and then back to off.
+		
+	Our main.c includes all of the other files in this project in order to 
+		utilize the function we built in them. This allows for more compact
+		and focused files which is easier to read and debug.
+		
+	We have also included the delay library in order to use the
+		_delay_ms() function
+	
  */ 
 
 #include <avr/io.h>
 #include "board.h"
-//#include "GPIO_inputs.h"
-//#include "GPIO_outputs.h"
+#include "GPIO_inputs.h"
+#include "GPIO_outputs.h"
+#include "switches.h"
 #include <util/delay.h>
 
 
 int main(void)
 {
-	LEDS_init(LED0,LED0_MASK);//Initialize our LED as off
-	SWITCH_init(SW0,SW0_MASK);//Initialize our switch
-	volatile uint8_t numpressed;
-	numpressed = 0U;
-	LEDS_OFF(LED0,LED0_MASK);
+	//Initializing LEDs & Switches
+	GPIO_Output_init(LED0,LED0_MASK);
+	SWITCH_init(SW0,SW0_MASK);
+			
+	volatile uint8_t numpressed;	//represents amount of button pressed (mode #)
+	numpressed = 0U;				//initialize our variable to mode 0
+	
+	GPIO_Output_set(LED0,LED0_MASK);		//Setting our LED to OFF
+	
     while(1)
 	{
-		if (SWITCH_press(SW0,SW0_MASK) == 1U)
+		if (SWITCH_press(SW0,SW0_MASK) == 1U)	//if pressed we change modes	
 		{
-			numpressed++;
-			switch (numpressed)
+			numpressed++;						//increment counter to indicate button press (mode #)
+			switch (numpressed)					//enter the mode switch case
 			{
-				case 0U:
-					LEDS_OFF(LED0,LED0_MASK);
+				case 0U:						//button pressed 0 times (LED off)
+					GPIO_Output_set(LED0,LED0_MASK);
 					break;
-				case 1U:
-					LEDS_ON(LED0,LED0_MASK);
+				case 1U:						//button pressed 1 time (LED on)
+					GPIO_Output_clear(LED0,LED0_MASK);
 					break;
-				case 2U:
+				case 2U:						//button pressed 2 times (flashing mode)
 					while(1)
 					{
-						LEDS_ON(LED0,LED0_MASK);
-						_delay_ms(100);
-						LEDS_OFF(LED0,LED0_MASK);
-						_delay_ms(400);
-						if (SWITCH_press(SW0,SW0_MASK) == 1U)
-						{
+						GPIO_Output_clear(LED0,LED0_MASK);	//LED on
+						_delay_ms(100);						//wait 0.1s
+						GPIO_Output_set(LED0,LED0_MASK);	//LED off
+						_delay_ms(400);						//wait 0.4s
+						if (SWITCH_press(SW0,SW0_MASK) == 1U) //if a button is pressed, stop flashing
+						{		
 							break;
 						}
 					}
-					numpressed=0U;
-					LEDS_OFF(LED0,LED0_MASK);
+					numpressed=0U;	//reset amount of times pressed
+					GPIO_Output_set(LED0,LED0_MASK);	//LED off
 					break;
-				default:
-					LEDS_OFF(LED0,LED0_MASK);
+				default:								//default mode is off
+					GPIO_Output_set(LED0,LED0_MASK);
 					break;
 			}
 		}
-		
 	}
 }
-
-
-
-/*LED_Flash_Init();//Turns it on
-		LED_Flash_Change_State();//turns it of
-		_delay_ms(5000);//Wait for button press
-		LED_Flash_Change_State();//Turns it on
-		_delay_ms(5000);//Simulate that its just on
-		//Flashing
-		while(1)
-		{
-			LED_Flash_Change_State();
-			_delay_ms(500);
-			//Button press would exit this loop
-		}*/

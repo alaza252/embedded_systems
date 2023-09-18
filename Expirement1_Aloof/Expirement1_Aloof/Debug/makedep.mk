@@ -6,8 +6,6 @@ GPIO_inputs.c
 
 GPIO_outputs.c
 
-LED.c
-
 main.c
 
 switches.c

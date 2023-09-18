@@ -39,7 +39,6 @@ SUBDIRS :=
 C_SRCS +=  \
 ../GPIO_inputs.c \
 ../GPIO_outputs.c \
-../LED.c \
 ../main.c \
 ../switches.c
 
@@ -53,28 +52,24 @@ ASM_SRCS +=
 OBJS +=  \
 GPIO_inputs.o \
 GPIO_outputs.o \
-LED.o \
 main.o \
 switches.o
 
 OBJS_AS_ARGS +=  \
 GPIO_inputs.o \
 GPIO_outputs.o \
-LED.o \
 main.o \
 switches.o
 
 C_DEPS +=  \
 GPIO_inputs.d \
 GPIO_outputs.d \
-LED.d \
 main.d \
 switches.d
 
 C_DEPS_AS_ARGS +=  \
 GPIO_inputs.d \
 GPIO_outputs.d \
-LED.d \
 main.d \
 switches.d
 
@@ -100,13 +95,6 @@ LINKER_SCRIPT_DEP+=
 	
 
 ./GPIO_outputs.o: .././GPIO_outputs.c
-	@echo Building file: $<
-	@echo Invoking: AVR/GNU C Compiler : 5.4.0
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pb -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega324pb" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
-./LED.o: .././LED.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pb -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega324pb" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

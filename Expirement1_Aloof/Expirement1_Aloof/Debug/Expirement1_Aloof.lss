@@ -3,85 +3,85 @@ Expirement1_Aloof.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  00000320  2**0
+  0 .data         00000000  00800100  00800100  000002c8  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000002cc  00000000  00000000  00000054  2**1
+  1 .text         00000274  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  00000320  2**0
+  2 .comment      00000030  00000000  00000000  000002c8  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  00000350  2**2
+  3 .note.gnu.avr.deviceinfo 00000040  00000000  00000000  000002f8  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 000000d0  00000000  00000000  00000390  2**0
+  4 .debug_aranges 000000a0  00000000  00000000  00000338  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00001512  00000000  00000000  00000460  2**0
+  5 .debug_info   000011f1  00000000  00000000  000003d8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000e56  00000000  00000000  00001972  2**0
+  6 .debug_abbrev 00000d36  00000000  00000000  000015c9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000007b0  00000000  00000000  000027c8  2**0
+  7 .debug_line   000006ba  00000000  00000000  000022ff  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000168  00000000  00000000  00002f78  2**2
+  8 .debug_frame  00000114  00000000  00000000  000029bc  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000624  00000000  00000000  000030e0  2**0
+  9 .debug_str    000005ea  00000000  00000000  00002ad0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000004bc  00000000  00000000  00003704  2**0
+ 10 .debug_loc    00000390  00000000  00000000  000030ba  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000080  00000000  00000000  00003bc0  2**0
+ 11 .debug_ranges 00000060  00000000  00000000  0000344a  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
 
 00000000 <__vectors>:
    0:	0c 94 66 00 	jmp	0xcc	; 0xcc <__ctors_end>
-   4:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-   8:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-   c:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  10:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  14:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  18:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  1c:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  20:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  24:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  28:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  2c:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  30:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  34:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  38:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  3c:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  40:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  44:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  48:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  4c:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  50:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  54:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  58:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  5c:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  60:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  64:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  68:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  6c:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  70:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  74:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  78:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  7c:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  80:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  84:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  88:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  8c:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  90:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  94:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  98:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  9c:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  a0:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  a4:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  a8:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  ac:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  b0:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  b4:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  b8:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  bc:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  c0:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  c4:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
-  c8:	0c 94 78 00 	jmp	0xf0	; 0xf0 <__bad_interrupt>
+   4:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+   8:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+   c:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  10:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  14:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  18:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  1c:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  20:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  24:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  28:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  2c:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  30:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  34:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  38:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  3c:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  40:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  44:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  48:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  4c:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  50:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  54:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  58:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  5c:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  60:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  64:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  68:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  6c:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  70:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  74:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  78:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  7c:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  80:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  84:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  88:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  8c:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  90:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  94:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  98:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  9c:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  a0:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  a4:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  a8:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  ac:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  b0:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  b4:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  b8:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  bc:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  c0:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  c4:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
+  c8:	0c 94 70 00 	jmp	0xe0	; 0xe0 <__bad_interrupt>
 
 000000cc <__ctors_end>:
   cc:	11 24       	eor	r1, r1
@@ -90,400 +90,336 @@ Disassembly of section .text:
   d2:	d8 e0       	ldi	r29, 0x08	; 8
   d4:	de bf       	out	0x3e, r29	; 62
   d6:	cd bf       	out	0x3d, r28	; 61
+  d8:	0e 94 9c 00 	call	0x138	; 0x138 <main>
+  dc:	0c 94 38 01 	jmp	0x270	; 0x270 <_exit>
 
-000000d8 <__do_clear_bss>:
-  d8:	21 e0       	ldi	r18, 0x01	; 1
-  da:	a0 e0       	ldi	r26, 0x00	; 0
-  dc:	b1 e0       	ldi	r27, 0x01	; 1
-  de:	01 c0       	rjmp	.+2      	; 0xe2 <.do_clear_bss_start>
+000000e0 <__bad_interrupt>:
+  e0:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
-000000e0 <.do_clear_bss_loop>:
-  e0:	1d 92       	st	X+, r1
-
-000000e2 <.do_clear_bss_start>:
-  e2:	a0 30       	cpi	r26, 0x00	; 0
-  e4:	b2 07       	cpc	r27, r18
-  e6:	e1 f7       	brne	.-8      	; 0xe0 <.do_clear_bss_loop>
-  e8:	0e 94 bd 00 	call	0x17a	; 0x17a <main>
-  ec:	0c 94 64 01 	jmp	0x2c8	; 0x2c8 <_exit>
-
-000000f0 <__bad_interrupt>:
-  f0:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
-
-000000f4 <GPIO_Input_init>:
-#include "LED.h"
-#include "GPIO_inputs.h"
-
-
+000000e4 <GPIO_Input_init>:
+ *  GPIO_DDR determines if a pin is an input or output, and 0 means input
+ *  GPIO_PIN controls the pullup resistors for those pins
+ *  returns: none
+ */
 void GPIO_Input_init( volatile GPIO_t * port_addr, uint8_t pinmask)
 {
-  f4:	fc 01       	movw	r30, r24
+  e4:	fc 01       	movw	r30, r24
 	port_addr -> GPIO_DDR &= ~pinmask;
-  f6:	81 81       	ldd	r24, Z+1	; 0x01
-  f8:	96 2f       	mov	r25, r22
-  fa:	90 95       	com	r25
-  fc:	89 23       	and	r24, r25
-  fe:	81 83       	std	Z+1, r24	; 0x01
+  e6:	81 81       	ldd	r24, Z+1	; 0x01
+  e8:	96 2f       	mov	r25, r22
+  ea:	90 95       	com	r25
+  ec:	89 23       	and	r24, r25
+  ee:	81 83       	std	Z+1, r24	; 0x01
 	port_addr -> GPIO_PIN |= pinmask;
- 100:	80 81       	ld	r24, Z
- 102:	68 2b       	or	r22, r24
- 104:	60 83       	st	Z, r22
- 106:	08 95       	ret
+  f0:	80 81       	ld	r24, Z
+  f2:	68 2b       	or	r22, r24
+  f4:	60 83       	st	Z, r22
+  f6:	08 95       	ret
 
-00000108 <GPIO_Input_read>:
-}
-
-
-
+000000f8 <GPIO_Input_read>:
+ *  Parameters: the address to the port address, pinmask contains the pin wanting to change
+ *  input_temp: temporary variable storing the current input state at that pin number
+ *  returns: 1U if pin is high, 0U if low
+ */
 uint8_t GPIO_Input_read( volatile GPIO_t * port_addr, uint8_t pin)
 {
- 108:	cf 93       	push	r28
- 10a:	df 93       	push	r29
- 10c:	1f 92       	push	r1
- 10e:	cd b7       	in	r28, 0x3d	; 61
- 110:	de b7       	in	r29, 0x3e	; 62
+  f8:	cf 93       	push	r28
+  fa:	df 93       	push	r29
+  fc:	1f 92       	push	r1
+  fe:	cd b7       	in	r28, 0x3d	; 61
+ 100:	de b7       	in	r29, 0x3e	; 62
 	volatile uint8_t input_temp;
 	input_temp = (port_addr -> GPIO_PIN) & pin;
- 112:	fc 01       	movw	r30, r24
- 114:	80 81       	ld	r24, Z
- 116:	68 23       	and	r22, r24
- 118:	69 83       	std	Y+1, r22	; 0x01
+ 102:	fc 01       	movw	r30, r24
+ 104:	80 81       	ld	r24, Z
+ 106:	68 23       	and	r22, r24
+ 108:	69 83       	std	Y+1, r22	; 0x01
 	if(input_temp > 0U)
- 11a:	89 81       	ldd	r24, Y+1	; 0x01
- 11c:	81 11       	cpse	r24, r1
+ 10a:	89 81       	ldd	r24, Y+1	; 0x01
+ 10c:	81 11       	cpse	r24, r1
 	{
 		return 1U;
- 11e:	81 e0       	ldi	r24, 0x01	; 1
+ 10e:	81 e0       	ldi	r24, 0x01	; 1
 	}
 	return 0U;
- 120:	0f 90       	pop	r0
- 122:	df 91       	pop	r29
- 124:	cf 91       	pop	r28
- 126:	08 95       	ret
+ 110:	0f 90       	pop	r0
+ 112:	df 91       	pop	r29
+ 114:	cf 91       	pop	r28
+ 116:	08 95       	ret
 
-00000128 <GPIO_Output_init>:
-#include "GPIO_outputs.h"
- 
- 
+00000118 <GPIO_Output_init>:
+ *
+ *  returns: none
+ */
  void GPIO_Output_init( volatile GPIO_t * port_addr, uint8_t pinmask)
  {
 	 port_addr -> GPIO_DDR |= pinmask;
- 128:	fc 01       	movw	r30, r24
- 12a:	21 81       	ldd	r18, Z+1	; 0x01
- 12c:	62 2b       	or	r22, r18
- 12e:	61 83       	std	Z+1, r22	; 0x01
- 130:	08 95       	ret
+ 118:	fc 01       	movw	r30, r24
+ 11a:	21 81       	ldd	r18, Z+1	; 0x01
+ 11c:	62 2b       	or	r22, r18
+ 11e:	61 83       	std	Z+1, r22	; 0x01
+ 120:	08 95       	ret
 
-00000132 <GPIO_Output_set>:
- }
- 
+00000122 <GPIO_Output_set>:
+ *
+ *  returns: none
+ */
  void GPIO_Output_set( volatile GPIO_t * port_addr, uint8_t pinmask)
  {
 	 port_addr -> GPIO_PORT |= pinmask;
- 132:	fc 01       	movw	r30, r24
- 134:	22 81       	ldd	r18, Z+2	; 0x02
- 136:	62 2b       	or	r22, r18
- 138:	62 83       	std	Z+2, r22	; 0x02
- 13a:	08 95       	ret
+ 122:	fc 01       	movw	r30, r24
+ 124:	22 81       	ldd	r18, Z+2	; 0x02
+ 126:	62 2b       	or	r22, r18
+ 128:	62 83       	std	Z+2, r22	; 0x02
+ 12a:	08 95       	ret
 
-0000013c <GPIO_Output_clear>:
- }
- 
+0000012c <GPIO_Output_clear>:
+ *  GPIO_PORT determines the output value, and here it is set low
+ *
+ *  returns: none
+ */
  void GPIO_Output_clear( volatile GPIO_t * port_addr, uint8_t pinmask)
  {
- 13c:	fc 01       	movw	r30, r24
+ 12c:	fc 01       	movw	r30, r24
 	 port_addr -> GPIO_PORT &= ~pinmask;
- 13e:	92 81       	ldd	r25, Z+2	; 0x02
- 140:	60 95       	com	r22
- 142:	69 23       	and	r22, r25
- 144:	62 83       	std	Z+2, r22	; 0x02
- 146:	08 95       	ret
+ 12e:	92 81       	ldd	r25, Z+2	; 0x02
+ 130:	60 95       	com	r22
+ 132:	69 23       	and	r22, r25
+ 134:	62 83       	std	Z+2, r22	; 0x02
+ 136:	08 95       	ret
 
-00000148 <LEDS_ON>:
-	LEDS_OFF(port_addr,led_pin);	
-}
-
-void LEDS_ON(volatile GPIO_t * port_addr, uint8_t led_pin)
-{
-	GPIO_Output_clear(port_addr,led_pin);
- 148:	0e 94 9e 00 	call	0x13c	; 0x13c <GPIO_Output_clear>
- 14c:	08 95       	ret
-
-0000014e <LEDS_OFF>:
-}
-
-void LEDS_OFF(volatile GPIO_t * port_addr, uint8_t led_pin)
-{
-	GPIO_Output_set(port_addr,led_pin);
- 14e:	0e 94 99 00 	call	0x132	; 0x132 <GPIO_Output_set>
- 152:	08 95       	ret
-
-00000154 <LEDS_init>:
-
-
-
-
-void LEDS_init(volatile GPIO_t * port_addr, uint8_t led_pin)
-{
- 154:	1f 93       	push	r17
- 156:	cf 93       	push	r28
- 158:	df 93       	push	r29
- 15a:	ec 01       	movw	r28, r24
- 15c:	16 2f       	mov	r17, r22
-	GPIO_Output_init(port_addr, led_pin);
- 15e:	0e 94 94 00 	call	0x128	; 0x128 <GPIO_Output_init>
-	GPIO_Output_set(port_addr,led_pin);
- 162:	61 2f       	mov	r22, r17
- 164:	ce 01       	movw	r24, r28
- 166:	0e 94 99 00 	call	0x132	; 0x132 <GPIO_Output_set>
-	LEDS_OFF(port_addr,led_pin);	
- 16a:	61 2f       	mov	r22, r17
- 16c:	ce 01       	movw	r24, r28
- 16e:	0e 94 a7 00 	call	0x14e	; 0x14e <LEDS_OFF>
-}
- 172:	df 91       	pop	r29
- 174:	cf 91       	pop	r28
- 176:	1f 91       	pop	r17
- 178:	08 95       	ret
-
-0000017a <main>:
-//#include "GPIO_outputs.h"
+00000138 <main>:
+#include "switches.h"
 #include <util/delay.h>
 
 
 int main(void)
 {
- 17a:	cf 93       	push	r28
- 17c:	df 93       	push	r29
- 17e:	1f 92       	push	r1
- 180:	cd b7       	in	r28, 0x3d	; 61
- 182:	de b7       	in	r29, 0x3e	; 62
-	LEDS_init(LED0,LED0_MASK);//Initialize our LED as off
- 184:	60 e8       	ldi	r22, 0x80	; 128
- 186:	70 e0       	ldi	r23, 0x00	; 0
- 188:	86 e2       	ldi	r24, 0x26	; 38
- 18a:	90 e0       	ldi	r25, 0x00	; 0
- 18c:	0e 94 aa 00 	call	0x154	; 0x154 <LEDS_init>
-	SWITCH_init(SW0,SW0_MASK);//Initialize our switch
- 190:	60 e4       	ldi	r22, 0x40	; 64
- 192:	70 e0       	ldi	r23, 0x00	; 0
- 194:	86 e2       	ldi	r24, 0x26	; 38
- 196:	90 e0       	ldi	r25, 0x00	; 0
- 198:	0e 94 2a 01 	call	0x254	; 0x254 <SWITCH_init>
-	volatile uint8_t numpressed;
-	numpressed = 0U;
- 19c:	19 82       	std	Y+1, r1	; 0x01
-	LEDS_OFF(LED0,LED0_MASK);
- 19e:	60 e8       	ldi	r22, 0x80	; 128
- 1a0:	70 e0       	ldi	r23, 0x00	; 0
- 1a2:	86 e2       	ldi	r24, 0x26	; 38
- 1a4:	90 e0       	ldi	r25, 0x00	; 0
- 1a6:	0e 94 a7 00 	call	0x14e	; 0x14e <LEDS_OFF>
+ 138:	cf 93       	push	r28
+ 13a:	df 93       	push	r29
+ 13c:	1f 92       	push	r1
+ 13e:	cd b7       	in	r28, 0x3d	; 61
+ 140:	de b7       	in	r29, 0x3e	; 62
+	//Initializing LEDs & Switches
+	GPIO_Output_init(LED0,LED0_MASK);
+ 142:	60 e8       	ldi	r22, 0x80	; 128
+ 144:	86 e2       	ldi	r24, 0x26	; 38
+ 146:	90 e0       	ldi	r25, 0x00	; 0
+ 148:	0e 94 8c 00 	call	0x118	; 0x118 <GPIO_Output_init>
+	SWITCH_init(SW0,SW0_MASK);
+ 14c:	60 e4       	ldi	r22, 0x40	; 64
+ 14e:	86 e2       	ldi	r24, 0x26	; 38
+ 150:	90 e0       	ldi	r25, 0x00	; 0
+ 152:	0e 94 fe 00 	call	0x1fc	; 0x1fc <SWITCH_init>
+			
+	volatile uint8_t numpressed;	//represents amount of button pressed (mode #)
+	numpressed = 0U;				//initialize our variable to mode 0
+ 156:	19 82       	std	Y+1, r1	; 0x01
+	
+	GPIO_Output_set(LED0,LED0_MASK);		//Setting our LED to OFF
+ 158:	60 e8       	ldi	r22, 0x80	; 128
+ 15a:	86 e2       	ldi	r24, 0x26	; 38
+ 15c:	90 e0       	ldi	r25, 0x00	; 0
+ 15e:	0e 94 91 00 	call	0x122	; 0x122 <GPIO_Output_set>
+	
     while(1)
 	{
-		if (SWITCH_press(SW0,SW0_MASK) == 1U)
- 1aa:	60 e4       	ldi	r22, 0x40	; 64
- 1ac:	70 e0       	ldi	r23, 0x00	; 0
- 1ae:	86 e2       	ldi	r24, 0x26	; 38
- 1b0:	90 e0       	ldi	r25, 0x00	; 0
- 1b2:	0e 94 2d 01 	call	0x25a	; 0x25a <SWITCH_press>
- 1b6:	01 97       	sbiw	r24, 0x01	; 1
- 1b8:	c1 f7       	brne	.-16     	; 0x1aa <main+0x30>
+		if (SWITCH_press(SW0,SW0_MASK) == 1U)	//if pressed we change modes	
+ 162:	60 e4       	ldi	r22, 0x40	; 64
+ 164:	86 e2       	ldi	r24, 0x26	; 38
+ 166:	90 e0       	ldi	r25, 0x00	; 0
+ 168:	0e 94 01 01 	call	0x202	; 0x202 <SWITCH_press>
+ 16c:	81 30       	cpi	r24, 0x01	; 1
+ 16e:	c9 f7       	brne	.-14     	; 0x162 <main+0x2a>
 		{
-			numpressed++;
- 1ba:	89 81       	ldd	r24, Y+1	; 0x01
- 1bc:	8f 5f       	subi	r24, 0xFF	; 255
- 1be:	89 83       	std	Y+1, r24	; 0x01
-			switch (numpressed)
- 1c0:	89 81       	ldd	r24, Y+1	; 0x01
- 1c2:	81 30       	cpi	r24, 0x01	; 1
- 1c4:	59 f0       	breq	.+22     	; 0x1dc <main+0x62>
- 1c6:	18 f0       	brcs	.+6      	; 0x1ce <main+0x54>
- 1c8:	82 30       	cpi	r24, 0x02	; 2
- 1ca:	79 f0       	breq	.+30     	; 0x1ea <main+0x70>
- 1cc:	3c c0       	rjmp	.+120    	; 0x246 <main+0xcc>
+			numpressed++;						//increment counter to indicate button press (mode #)
+ 170:	89 81       	ldd	r24, Y+1	; 0x01
+ 172:	8f 5f       	subi	r24, 0xFF	; 255
+ 174:	89 83       	std	Y+1, r24	; 0x01
+			switch (numpressed)					//enter the mode switch case
+ 176:	89 81       	ldd	r24, Y+1	; 0x01
+ 178:	81 30       	cpi	r24, 0x01	; 1
+ 17a:	51 f0       	breq	.+20     	; 0x190 <main+0x58>
+ 17c:	18 f0       	brcs	.+6      	; 0x184 <main+0x4c>
+ 17e:	82 30       	cpi	r24, 0x02	; 2
+ 180:	69 f0       	breq	.+26     	; 0x19c <main+0x64>
+ 182:	36 c0       	rjmp	.+108    	; 0x1f0 <main+0xb8>
 			{
-				case 0U:
-					LEDS_OFF(LED0,LED0_MASK);
- 1ce:	60 e8       	ldi	r22, 0x80	; 128
- 1d0:	70 e0       	ldi	r23, 0x00	; 0
- 1d2:	86 e2       	ldi	r24, 0x26	; 38
- 1d4:	90 e0       	ldi	r25, 0x00	; 0
- 1d6:	0e 94 a7 00 	call	0x14e	; 0x14e <LEDS_OFF>
+				case 0U:						//button pressed 0 times (LED off)
+					GPIO_Output_set(LED0,LED0_MASK);
+ 184:	60 e8       	ldi	r22, 0x80	; 128
+ 186:	86 e2       	ldi	r24, 0x26	; 38
+ 188:	90 e0       	ldi	r25, 0x00	; 0
+ 18a:	0e 94 91 00 	call	0x122	; 0x122 <GPIO_Output_set>
 					break;
- 1da:	e7 cf       	rjmp	.-50     	; 0x1aa <main+0x30>
-				case 1U:
-					LEDS_ON(LED0,LED0_MASK);
- 1dc:	60 e8       	ldi	r22, 0x80	; 128
- 1de:	70 e0       	ldi	r23, 0x00	; 0
- 1e0:	86 e2       	ldi	r24, 0x26	; 38
- 1e2:	90 e0       	ldi	r25, 0x00	; 0
- 1e4:	0e 94 a4 00 	call	0x148	; 0x148 <LEDS_ON>
+ 18e:	e9 cf       	rjmp	.-46     	; 0x162 <main+0x2a>
+				case 1U:						//button pressed 1 time (LED on)
+					GPIO_Output_clear(LED0,LED0_MASK);
+ 190:	60 e8       	ldi	r22, 0x80	; 128
+ 192:	86 e2       	ldi	r24, 0x26	; 38
+ 194:	90 e0       	ldi	r25, 0x00	; 0
+ 196:	0e 94 96 00 	call	0x12c	; 0x12c <GPIO_Output_clear>
 					break;
- 1e8:	e0 cf       	rjmp	.-64     	; 0x1aa <main+0x30>
-				case 2U:
+ 19a:	e3 cf       	rjmp	.-58     	; 0x162 <main+0x2a>
+				case 2U:						//button pressed 2 times (flashing mode)
 					while(1)
 					{
-						LEDS_ON(LED0,LED0_MASK);
- 1ea:	60 e8       	ldi	r22, 0x80	; 128
- 1ec:	70 e0       	ldi	r23, 0x00	; 0
- 1ee:	86 e2       	ldi	r24, 0x26	; 38
- 1f0:	90 e0       	ldi	r25, 0x00	; 0
- 1f2:	0e 94 a4 00 	call	0x148	; 0x148 <LEDS_ON>
+						GPIO_Output_clear(LED0,LED0_MASK);	//LED on
+ 19c:	60 e8       	ldi	r22, 0x80	; 128
+ 19e:	86 e2       	ldi	r24, 0x26	; 38
+ 1a0:	90 e0       	ldi	r25, 0x00	; 0
+ 1a2:	0e 94 96 00 	call	0x12c	; 0x12c <GPIO_Output_clear>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 1f6:	2f ef       	ldi	r18, 0xFF	; 255
- 1f8:	81 ee       	ldi	r24, 0xE1	; 225
- 1fa:	94 e0       	ldi	r25, 0x04	; 4
- 1fc:	21 50       	subi	r18, 0x01	; 1
- 1fe:	80 40       	sbci	r24, 0x00	; 0
- 200:	90 40       	sbci	r25, 0x00	; 0
- 202:	e1 f7       	brne	.-8      	; 0x1fc <main+0x82>
- 204:	00 c0       	rjmp	.+0      	; 0x206 <main+0x8c>
- 206:	00 00       	nop
-						_delay_ms(100);
-						LEDS_OFF(LED0,LED0_MASK);
- 208:	60 e8       	ldi	r22, 0x80	; 128
- 20a:	70 e0       	ldi	r23, 0x00	; 0
- 20c:	86 e2       	ldi	r24, 0x26	; 38
- 20e:	90 e0       	ldi	r25, 0x00	; 0
- 210:	0e 94 a7 00 	call	0x14e	; 0x14e <LEDS_OFF>
- 214:	2f ef       	ldi	r18, 0xFF	; 255
- 216:	87 e8       	ldi	r24, 0x87	; 135
- 218:	93 e1       	ldi	r25, 0x13	; 19
- 21a:	21 50       	subi	r18, 0x01	; 1
- 21c:	80 40       	sbci	r24, 0x00	; 0
- 21e:	90 40       	sbci	r25, 0x00	; 0
- 220:	e1 f7       	brne	.-8      	; 0x21a <main+0xa0>
- 222:	00 c0       	rjmp	.+0      	; 0x224 <main+0xaa>
- 224:	00 00       	nop
-						_delay_ms(400);
-						if (SWITCH_press(SW0,SW0_MASK) == 1U)
- 226:	60 e4       	ldi	r22, 0x40	; 64
- 228:	70 e0       	ldi	r23, 0x00	; 0
- 22a:	86 e2       	ldi	r24, 0x26	; 38
- 22c:	90 e0       	ldi	r25, 0x00	; 0
- 22e:	0e 94 2d 01 	call	0x25a	; 0x25a <SWITCH_press>
- 232:	01 97       	sbiw	r24, 0x01	; 1
- 234:	d1 f6       	brne	.-76     	; 0x1ea <main+0x70>
-						{
+ 1a6:	2f ef       	ldi	r18, 0xFF	; 255
+ 1a8:	81 ee       	ldi	r24, 0xE1	; 225
+ 1aa:	94 e0       	ldi	r25, 0x04	; 4
+ 1ac:	21 50       	subi	r18, 0x01	; 1
+ 1ae:	80 40       	sbci	r24, 0x00	; 0
+ 1b0:	90 40       	sbci	r25, 0x00	; 0
+ 1b2:	e1 f7       	brne	.-8      	; 0x1ac <main+0x74>
+ 1b4:	00 c0       	rjmp	.+0      	; 0x1b6 <main+0x7e>
+ 1b6:	00 00       	nop
+						_delay_ms(100);						//wait 0.1s
+						GPIO_Output_set(LED0,LED0_MASK);	//LED off
+ 1b8:	60 e8       	ldi	r22, 0x80	; 128
+ 1ba:	86 e2       	ldi	r24, 0x26	; 38
+ 1bc:	90 e0       	ldi	r25, 0x00	; 0
+ 1be:	0e 94 91 00 	call	0x122	; 0x122 <GPIO_Output_set>
+ 1c2:	2f ef       	ldi	r18, 0xFF	; 255
+ 1c4:	87 e8       	ldi	r24, 0x87	; 135
+ 1c6:	93 e1       	ldi	r25, 0x13	; 19
+ 1c8:	21 50       	subi	r18, 0x01	; 1
+ 1ca:	80 40       	sbci	r24, 0x00	; 0
+ 1cc:	90 40       	sbci	r25, 0x00	; 0
+ 1ce:	e1 f7       	brne	.-8      	; 0x1c8 <main+0x90>
+ 1d0:	00 c0       	rjmp	.+0      	; 0x1d2 <main+0x9a>
+ 1d2:	00 00       	nop
+						_delay_ms(400);						//wait 0.4s
+						if (SWITCH_press(SW0,SW0_MASK) == 1U) //if a button is pressed, stop flashing
+ 1d4:	60 e4       	ldi	r22, 0x40	; 64
+ 1d6:	86 e2       	ldi	r24, 0x26	; 38
+ 1d8:	90 e0       	ldi	r25, 0x00	; 0
+ 1da:	0e 94 01 01 	call	0x202	; 0x202 <SWITCH_press>
+ 1de:	81 30       	cpi	r24, 0x01	; 1
+ 1e0:	e9 f6       	brne	.-70     	; 0x19c <main+0x64>
+						{		
 							break;
 						}
 					}
-					numpressed=0U;
- 236:	19 82       	std	Y+1, r1	; 0x01
-					LEDS_OFF(LED0,LED0_MASK);
- 238:	60 e8       	ldi	r22, 0x80	; 128
- 23a:	70 e0       	ldi	r23, 0x00	; 0
- 23c:	86 e2       	ldi	r24, 0x26	; 38
- 23e:	90 e0       	ldi	r25, 0x00	; 0
- 240:	0e 94 a7 00 	call	0x14e	; 0x14e <LEDS_OFF>
+					numpressed=0U;	//reset amount of times pressed
+ 1e2:	19 82       	std	Y+1, r1	; 0x01
+					GPIO_Output_set(LED0,LED0_MASK);	//LED off
+ 1e4:	60 e8       	ldi	r22, 0x80	; 128
+ 1e6:	86 e2       	ldi	r24, 0x26	; 38
+ 1e8:	90 e0       	ldi	r25, 0x00	; 0
+ 1ea:	0e 94 91 00 	call	0x122	; 0x122 <GPIO_Output_set>
 					break;
- 244:	b2 cf       	rjmp	.-156    	; 0x1aa <main+0x30>
-				default:
-					LEDS_OFF(LED0,LED0_MASK);
- 246:	60 e8       	ldi	r22, 0x80	; 128
- 248:	70 e0       	ldi	r23, 0x00	; 0
- 24a:	86 e2       	ldi	r24, 0x26	; 38
- 24c:	90 e0       	ldi	r25, 0x00	; 0
- 24e:	0e 94 a7 00 	call	0x14e	; 0x14e <LEDS_OFF>
+ 1ee:	b9 cf       	rjmp	.-142    	; 0x162 <main+0x2a>
+				default:								//default mode is off
+					GPIO_Output_set(LED0,LED0_MASK);
+ 1f0:	60 e8       	ldi	r22, 0x80	; 128
+ 1f2:	86 e2       	ldi	r24, 0x26	; 38
+ 1f4:	90 e0       	ldi	r25, 0x00	; 0
+ 1f6:	0e 94 91 00 	call	0x122	; 0x122 <GPIO_Output_set>
 					break;
- 252:	ab cf       	rjmp	.-170    	; 0x1aa <main+0x30>
+ 1fa:	b3 cf       	rjmp	.-154    	; 0x162 <main+0x2a>
 
-00000254 <SWITCH_init>:
-#define PRESSED 0U
-#define DEBOUNCE_DELAY  70U
-
+000001fc <SWITCH_init>:
+ *
+ *  returns: none
+ */
 void SWITCH_init(volatile GPIO_t *port_addr, uint8_t pinmask)
 {
-	GPIO_Input_init( port_addr,  pinmask);
- 254:	0e 94 7a 00 	call	0xf4	; 0xf4 <GPIO_Input_init>
- 258:	08 95       	ret
+	GPIO_Input_init( port_addr,  pinmask);	
+ 1fc:	0e 94 72 00 	call	0xe4	; 0xe4 <GPIO_Input_init>
+ 200:	08 95       	ret
 
-0000025a <SWITCH_press>:
-	
-}
+00000202 <SWITCH_press>:
+ *  we then wait until the switch is no longer being pressed (to count it as one button press)
+ *
+ *  returns: 1U if there was a button press, 0U if no press was detected
+ */
 uint8_t SWITCH_press( volatile GPIO_t *port_addr, uint8_t pinmask)
 {
- 25a:	ef 92       	push	r14
- 25c:	ff 92       	push	r15
- 25e:	0f 93       	push	r16
- 260:	1f 93       	push	r17
- 262:	cf 93       	push	r28
- 264:	df 93       	push	r29
- 266:	1f 92       	push	r1
- 268:	cd b7       	in	r28, 0x3d	; 61
- 26a:	de b7       	in	r29, 0x3e	; 62
- 26c:	8c 01       	movw	r16, r24
- 26e:	f6 2e       	mov	r15, r22
+ 202:	ef 92       	push	r14
+ 204:	ff 92       	push	r15
+ 206:	0f 93       	push	r16
+ 208:	1f 93       	push	r17
+ 20a:	cf 93       	push	r28
+ 20c:	df 93       	push	r29
+ 20e:	1f 92       	push	r1
+ 210:	cd b7       	in	r28, 0x3d	; 61
+ 212:	de b7       	in	r29, 0x3e	; 62
+ 214:	8c 01       	movw	r16, r24
+ 216:	f6 2e       	mov	r15, r22
 	volatile uint8_t readvalue;
 	readvalue = GPIO_Input_read(port_addr,pinmask);
- 270:	0e 94 84 00 	call	0x108	; 0x108 <GPIO_Input_read>
- 274:	89 83       	std	Y+1, r24	; 0x01
+ 218:	0e 94 7c 00 	call	0xf8	; 0xf8 <GPIO_Input_read>
+ 21c:	89 83       	std	Y+1, r24	; 0x01
 	if (readvalue == PRESSED)
- 276:	e9 80       	ldd	r14, Y+1	; 0x01
- 278:	e1 10       	cpse	r14, r1
- 27a:	1c c0       	rjmp	.+56     	; 0x2b4 <SWITCH_press+0x5a>
- 27c:	2f ef       	ldi	r18, 0xFF	; 255
- 27e:	8a e6       	ldi	r24, 0x6A	; 106
- 280:	93 e0       	ldi	r25, 0x03	; 3
- 282:	21 50       	subi	r18, 0x01	; 1
- 284:	80 40       	sbci	r24, 0x00	; 0
- 286:	90 40       	sbci	r25, 0x00	; 0
- 288:	e1 f7       	brne	.-8      	; 0x282 <SWITCH_press+0x28>
- 28a:	00 c0       	rjmp	.+0      	; 0x28c <SWITCH_press+0x32>
- 28c:	00 00       	nop
+ 21e:	e9 80       	ldd	r14, Y+1	; 0x01
+ 220:	e1 10       	cpse	r14, r1
+ 222:	1c c0       	rjmp	.+56     	; 0x25c <SWITCH_press+0x5a>
+ 224:	2f ef       	ldi	r18, 0xFF	; 255
+ 226:	8a e6       	ldi	r24, 0x6A	; 106
+ 228:	93 e0       	ldi	r25, 0x03	; 3
+ 22a:	21 50       	subi	r18, 0x01	; 1
+ 22c:	80 40       	sbci	r24, 0x00	; 0
+ 22e:	90 40       	sbci	r25, 0x00	; 0
+ 230:	e1 f7       	brne	.-8      	; 0x22a <SWITCH_press+0x28>
+ 232:	00 c0       	rjmp	.+0      	; 0x234 <SWITCH_press+0x32>
+ 234:	00 00       	nop
 	{
 		_delay_ms(DEBOUNCE_DELAY);
 		readvalue = GPIO_Input_read(port_addr,pinmask);
- 28e:	6f 2d       	mov	r22, r15
- 290:	c8 01       	movw	r24, r16
- 292:	0e 94 84 00 	call	0x108	; 0x108 <GPIO_Input_read>
- 296:	89 83       	std	Y+1, r24	; 0x01
+ 236:	6f 2d       	mov	r22, r15
+ 238:	c8 01       	movw	r24, r16
+ 23a:	0e 94 7c 00 	call	0xf8	; 0xf8 <GPIO_Input_read>
+ 23e:	89 83       	std	Y+1, r24	; 0x01
 		if (readvalue  == PRESSED)
- 298:	89 81       	ldd	r24, Y+1	; 0x01
- 29a:	81 11       	cpse	r24, r1
- 29c:	0c c0       	rjmp	.+24     	; 0x2b6 <SWITCH_press+0x5c>
+ 240:	89 81       	ldd	r24, Y+1	; 0x01
+ 242:	81 11       	cpse	r24, r1
+ 244:	0c c0       	rjmp	.+24     	; 0x25e <SWITCH_press+0x5c>
 		{	
 			while(1)
 			{
 				readvalue = GPIO_Input_read(port_addr,pinmask);
- 29e:	6f 2d       	mov	r22, r15
- 2a0:	c8 01       	movw	r24, r16
- 2a2:	0e 94 84 00 	call	0x108	; 0x108 <GPIO_Input_read>
- 2a6:	89 83       	std	Y+1, r24	; 0x01
+ 246:	6f 2d       	mov	r22, r15
+ 248:	c8 01       	movw	r24, r16
+ 24a:	0e 94 7c 00 	call	0xf8	; 0xf8 <GPIO_Input_read>
+ 24e:	89 83       	std	Y+1, r24	; 0x01
 				if (readvalue != PRESSED)
- 2a8:	89 81       	ldd	r24, Y+1	; 0x01
- 2aa:	88 23       	and	r24, r24
- 2ac:	c1 f3       	breq	.-16     	; 0x29e <SWITCH_press+0x44>
+ 250:	89 81       	ldd	r24, Y+1	; 0x01
+ 252:	88 23       	and	r24, r24
+ 254:	c1 f3       	breq	.-16     	; 0x246 <SWITCH_press+0x44>
 				{
 					return 1U;
- 2ae:	ee 24       	eor	r14, r14
- 2b0:	e3 94       	inc	r14
- 2b2:	01 c0       	rjmp	.+2      	; 0x2b6 <SWITCH_press+0x5c>
+ 256:	ee 24       	eor	r14, r14
+ 258:	e3 94       	inc	r14
+ 25a:	01 c0       	rjmp	.+2      	; 0x25e <SWITCH_press+0x5c>
 				}
 			}
-			
 		}
 	}
 	return 0U;
- 2b4:	e1 2c       	mov	r14, r1
- 2b6:	8e 2d       	mov	r24, r14
- 2b8:	0f 90       	pop	r0
- 2ba:	df 91       	pop	r29
- 2bc:	cf 91       	pop	r28
- 2be:	1f 91       	pop	r17
- 2c0:	0f 91       	pop	r16
- 2c2:	ff 90       	pop	r15
- 2c4:	ef 90       	pop	r14
- 2c6:	08 95       	ret
+ 25c:	e1 2c       	mov	r14, r1
+ 25e:	8e 2d       	mov	r24, r14
+ 260:	0f 90       	pop	r0
+ 262:	df 91       	pop	r29
+ 264:	cf 91       	pop	r28
+ 266:	1f 91       	pop	r17
+ 268:	0f 91       	pop	r16
+ 26a:	ff 90       	pop	r15
+ 26c:	ef 90       	pop	r14
+ 26e:	08 95       	ret
 
-000002c8 <_exit>:
- 2c8:	f8 94       	cli
+00000270 <_exit>:
+ 270:	f8 94       	cli
 
-000002ca <__stop_program>:
- 2ca:	ff cf       	rjmp	.-2      	; 0x2ca <__stop_program>
+00000272 <__stop_program>:
+ 272:	ff cf       	rjmp	.-2      	; 0x272 <__stop_program>
