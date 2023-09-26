@@ -1,10 +1,9 @@
 /*
  * Experiment2.c
  *
- * Created: 9/11/2023 2:40:46 PM
- * Author: Sam Stockmann, Lavender Shannon
+ * Created: 9/26/2023 4:27:07 PM
+ * Author : sjsmdd
  */ 
-
 
 #include "board.h"
 #include "leds.h"
@@ -35,29 +34,29 @@ int main(void)
 
 	while(1)
 	{
-		uint8_t current_val = read_switch(SW0_REG, SW0_PIN_MASK); // current value of switch
-		
-		if (current_val != 0 && current_val != old_val) // if switch is pressed and it was not pressed before
+		uint8_t current_val = read_switch(SW0_REG, SW0_PIN_MASK); // cur                                                                                                                                                             rent value of switch
+
+		if (current_val != 0 && current_val != old_val) // if switch is                                                                                                                                                              pressed and it was not pressed before
 		{
-			led_state = (led_state + 1) % 3; // total of 3 states, loop back to state 0 after state 2
+			led_state = (led_state + 1) % 3; // total of 3 states, l                                                                                                                                                             oop back to state 0 after state 2
 		}
-		
+
 		old_val = current_val;
-		
+
 		switch (led_state)
 		{
 			case LED_OFF:
-				gpio_led_off(LED0_REG, LED0_PIN_MASK);
-				break;
+			gpio_led_off(LED0_REG, LED0_PIN_MASK);
+			break;
 			case LED_ON:
-				gpio_led_on(LED0_REG, LED0_PIN_MASK);
-				break;
+			gpio_led_on(LED0_REG, LED0_PIN_MASK);
+			break;
 			case LED_BLINK:
-				gpio_led_on(LED0_REG, LED0_PIN_MASK);
-				_delay_ms(100);
-				gpio_led_off(LED0_REG, LED0_PIN_MASK);
-				_delay_ms(400);
-				break;
+			gpio_led_on(LED0_REG, LED0_PIN_MASK);
+			_delay_ms(100);
+			gpio_led_off(LED0_REG, LED0_PIN_MASK);
+			_delay_ms(400);
+			break;
 		}
 	}
 }
