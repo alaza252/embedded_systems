@@ -1,5 +1,5 @@
 /*
- * UART_Print.c
+ * uart_print.c
  *
  * Created: 9/4/2020 4:34:38 PM
  *  Author: youngerr
@@ -7,6 +7,7 @@
 
 #include <avr/io.h>
 #include "board.h"
+// TODO create UART.h file (and rename it to uart.h)
 #include "UART.h"
 #include <avr/pgmspace.h>
 
@@ -44,17 +45,17 @@ uint8_t copy_string_to_buffer(const char flash_string[], char buffer_p[], uint8_
 	return index;
 }
 
-void UART_transmit_string(volatile UART_t * UART_addr, char string_name[], uint8_t num_bytes)
+void uart_transmit_string(volatile UART_t * addr, char string_name[], uint8_t num_bytes)
 {
 	char temp8;
 	uint8_t index;
 	if(num_bytes==0)
 	{
 		temp8=string_name[0];
-                index=0;
+		index=0;
 		while (temp8!=0)
 		{
-			UART_transmit(UART_addr, temp8);
+			uart_transmit(addr, temp8);
 			index++;
 			temp8=string_name[index];
 		}
@@ -63,7 +64,7 @@ void UART_transmit_string(volatile UART_t * UART_addr, char string_name[], uint8
 	{
 		for(index=0;index<num_bytes;index++)
 		{
-			UART_transmit(UART_addr, string_name[index]);
+			uart_transmit(addr, string_name[index]);
 		}
 	}
 }
