@@ -54,7 +54,7 @@ uint8_t uart_receive(volatile UART_t *addr, uint8_t *rcvd_val) {
 
 uint8_t uart_receive_nb(volatile UART_t *addr, uint8_t *rcvd_val)
 {
-	if ((addr->UCSRA & (1 << RXC)) == 0) { // TODO is 1 << RXC correct? Do we need to include avr or something?
+	if ((addr->UCSRA & (1 << RXC)) == 0) {
 		// receive complete not set,
 		return UART_RECEIVE_INCOMPLETE_MASK;
 	}

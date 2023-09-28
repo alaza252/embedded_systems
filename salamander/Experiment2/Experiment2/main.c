@@ -10,73 +10,53 @@
 #include "switch.h"
 #include "uart.h"
 #include "uart_print.h"
+#include "print_memory.h"
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
+#include <avr/pgmspace.h>
 
-//#define LED_OFF 0
-//#define LED_ON 1
-//#define LED_BLINK 2
 
+const char STEP_7_FLASH_STRING[64] PROGMEM = {"This is an example of a string stored in flash!\n\r"};
 
 int main(void)
 {
 	uart_init(UART1, 9600UL);
 	
-	////init LEDs
+	// Step 6
+	sprintf(export_print_buffer(), "Hello! This line uses sprintf and the print buffer!\r\n");
+	uart_transmit_string(UART1, export_print_buffer(), 0);
+	
+	// Step 7
+	copy_string_to_buffer(STEP_7_FLASH_STRING, export_print_buffer(), 0);
+	uart_transmit_string(UART1, export_print_buffer(), 0);
+	
+	// Step 8
+	unsigned char in_memory_string[] = "This is a string with more than 30 characters. Sam and Lavender worked on this project together!\r\n";
+	print_memory(in_memory_string, 0);
+	
+	//init LEDs
 	gpio_led_init(LED0_REG, LED0_PIN_MASK);
-	//gpio_led_init(LED1_REG, LED1_PIN_MASK);
-	//gpio_led_init(LED2_REG, LED2_PIN_MASK);
-	//gpio_led_init(LED3_REG, LED3_PIN_MASK);
-//
-	//gpio_switch_init(SW0_REG, SW0_PIN_MASK);
-	//gpio_switch_init(SW1_REG, SW1_PIN_MASK);
-	//gpio_switch_init(SW2_REG, SW2_PIN_MASK);
-	//gpio_switch_init(SW3_REG, SW3_PIN_MASK);
-//
-	//uint8_t old_val = 0; // previous value of switch
-	//uint8_t led_state = 0;
 
-	//uint8_t led_state = 0;
+	uint8_t led_state = 0;
+
 	while(1)
 	{
-		uint8_t name[10];
-		sprintf(name,"Hello");
-		uart_transmit_string(UART1, name, 0);
-		_delay_ms(1000);
 		
-		//led_state = !led_state;
-		//if (led_state) {
-			//gpio_led_on(LED0_REG, LED0_PIN_MASK);
-		//} else {
-			//gpio_led_off(LED0_REG, LED0_PIN_MASK);
-			//
-		//}
+		uint8_t rcvd_val;
 		
-		//uint8_t current_val = read_switch(SW0_REG, SW0_PIN_MASK); // cur                                                                                                                                                             rent value of switch
-//
-		//if (current_val != 0 && current_val != old_val) // if switch is                                                                                                                                                              pressed and it was not pressed before
-		//{
-			//led_state = (led_state + 1) % 3; // total of 3 states, l                                                                                                                                                             oop back to state 0 after state 2
-		//}
-//
-		//old_val = current_val;
-//
-		//switch (led_state)
-		//{
-			//case LED_OFF:
-			//gpio_led_off(LED0_REG, LED0_PIN_MASK);
-			//break;
-			//case LED_ON:
-			//gpio_led_on(LED0_REG, LED0_PIN_MASK);
-			//break;
-			//case LED_BLINK:
-			//gpio_led_on(LED0_REG, LED0_PIN_MASK);
-			//_delay_ms(100);
-			//gpio_led_off(LED0_REG, LED0_PIN_MASK);
-			//_delay_ms(400);
-			//break;
-		//}
+		while (uart_receive_nb(UART1, &rcvd_val) == UART_RECEIVE_SUCCESS) {
+			uart_transmit(UART1, rcvd_val);
+		}
+		
+		led_state = !led_state;
+		if (led_state) {
+			gpio_led_on(LED0_REG, LED0_PIN_MASK);
+		} else {
+			gpio_led_off(LED0_REG, LED0_PIN_MASK);
+		}
+		
+		_delay_ms(500);
 	}
 }
 
