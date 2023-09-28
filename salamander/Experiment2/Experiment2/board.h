@@ -12,7 +12,7 @@
 #define BOARD_H
 
 #define F_CPU (16000000UL)
-#define F_DIV (1)
+#define OSC_DIV (1)
 
 typedef struct portRegs
 {

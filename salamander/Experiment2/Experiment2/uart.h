@@ -8,6 +8,8 @@
 #ifndef UART_H
 #define UART_H
 
+#include "board.h"
+
 typedef struct UART
 {
 	volatile uint8_t UCSRA;
@@ -39,6 +41,12 @@ typedef struct UART
 
 #define ONE_STOP_BIT (0 << 3)
 #define TWO_STOP_BITS (1 << 3)
+
+#define FIVE_DATA_BITS (0 << 1)
+#define SIX_DATA_BITS (1 << 1)
+#define SEVEN_DATA_BITS (2 << 1)
+#define EIGHT_DATA_BITS (3 << 1)
+#define NINE_DATA_BITS (3 << 1)
 
 void uart_init(volatile UART_t *addr, uint32_t baud_rate);
 

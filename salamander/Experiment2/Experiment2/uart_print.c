@@ -7,7 +7,6 @@
 
 #include <avr/io.h>
 #include "board.h"
-// TODO create UART.h file (and rename it to uart.h)
 #include "uart.h"
 #include <avr/pgmspace.h>
 
