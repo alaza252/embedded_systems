@@ -7,11 +7,12 @@
 
 #include "uart.h"
 
+// https://onlinedocs.microchip.com/pr/GUID-80B1922D-872B-40C8-A8A5-0CBE009FD908-en-US-3/index.html?GUID-6D0F74A4-A5A6-4207-A450-635C8547E437
 void uart_init(volatile UART_t *addr, uint32_t baud_rate)
 {
-	addr -> UCSRA = 0;
+	addr -> UCSRA = 0; // This sets U2X to 0
 	
-	uint8_t u2x = (addr -> UCSRA & (1 << U2X)) != 0 ? 1 : 0;
+	uint8_t u2x = (addr -> UCSRA & (1 << U2X)) != 0 ? 1 : 0; // read U2X anyway, so that if we change U2X in the future we have an up to date value
 	uint16_t ubbr_val = (uint16_t) (((F_CPU / OSC_DIV) / (8UL * (2 - u2x) * baud_rate)) - 1);
 	
 	addr -> BRRH = ubbr_val >> 8;
