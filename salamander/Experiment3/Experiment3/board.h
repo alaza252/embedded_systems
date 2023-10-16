@@ -72,4 +72,29 @@ typedef struct UART
 #define NINE_DATA_BITS (3 << 1)
 // endregion
 
+// region SPI
+
+typedef struct SPI
+{
+	// Lecture 09 contains good information for all of these registers.
+	/** SPCR - SPI Control Register.
+	 *
+	 * Note that two least significant bits are used to determine the SPI clock rate. SPI2X also supplements these values
+	 */
+	volatile uint8_t CONTROL;
+	/**
+	 * SPCR - SPI Status Register.
+	 * Contains SPIF, WCOL, ..., SPI2X bits
+	 */
+	volatile uint8_t STATUS;
+	/**
+	 * SPDR - SPI Data Register
+	 */
+	volatile uint8_t DATA;
+} SPI_t;
+
+
+
+// endregion
+
 #endif
