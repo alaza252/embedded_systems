@@ -42,7 +42,6 @@ uint8_t uart_receive(volatile UART_t *addr) {
 
 	do {
 		status = uart_receive_nb(addr, &val);
-		timeout_counter++;
 	} while ((status & UART_RECEIVE_INCOMPLETE_MASK) != 0);
 
 	return val;

@@ -1,8 +1,8 @@
 /*
- * Experiment2.c
+ * Experiment3.c
  *
- * Created: 9/26/2023 4:27:07 PM
- * Author : sjsmdd
+ * Created: 10/16/2023 2:08:07 PM
+ * Author : Sam Stockmann, Lavender Shannon
  */ 
 
 #include "board.h"
@@ -21,22 +21,20 @@ const char STEP_7_FLASH_STRING[64] PROGMEM = {"This is an example of a string st
 
 int main(void)
 {
+	//init UART
 	uart_init(UART1, 9600UL);
 	
-	// Step 6
-	sprintf(export_print_buffer(), "Hello! This line uses sprintf and the print buffer!\r\n");
-	uart_transmit_string(UART1, export_print_buffer(), 0);
-	
-	// Step 7
-	copy_string_to_buffer(STEP_7_FLASH_STRING, export_print_buffer(), 0);
-	uart_transmit_string(UART1, export_print_buffer(), 0);
-	
-	// Step 8
-	unsigned char in_memory_string[] = "This is a string with more than 30 characters. Sam and Lavender worked on this project together!\r\n";
-	print_memory(in_memory_string, 0);
+	//init SPI
+	spi_master_init(SPI0, 400000UL);
 	
 	//init LEDs
 	gpio_led_init(LED0_REG, LED0_PIN_MASK);
+	
+	sprintf(export_print_buffer(), "Hello! This line uses sprintf and the print buffer!\r\n");
+	uart_transmit_string(UART1, export_print_buffer(), 0);
+	
+	//unsigned char in_memory_string[] = "This is a string with more than 30 characters. Sam and Lavender worked on this project together!\r\n";
+	//print_memory(in_memory_string, 0);
 
 	uint8_t led_state = 0;
 

@@ -25,18 +25,25 @@ typedef struct portRegs
 	volatile uint8_t PORT_REG;
 } GpioPort_t;
 
-#define LED0_REG ((volatile GpioPort_t *) & PINC)
+
+#define PA ((volatile GpioPort_t *) & PINA)
+#define PB ((volatile GpioPort_t *) & PINB)
+#define PC ((volatile GpioPort_t *) & PINC)
+#define PD ((volatile GpioPort_t *) & PIND)
+#define PE ((volatile GpioPort_t *) & PINE)
+
+#define LED0_REG (PC)
 #define LED0_PIN_MASK (1<<7)
 
-#define LED1_REG ((volatile GpioPort_t *) & PINB)
+#define LED1_REG (PB)
 #define LED1_PIN_MASK (1<<3)
 
-#define LED2_REG ((volatile GpioPort_t *) & PINE)
+#define LED2_REG (PE)
 #define LED2_PIN_MASK (1<<4)
 
-#define LED3_REG ((volatile GpioPort_t *) & PINA)
+#define LED3_REG (PA)
 #define LED3_PIN_MASK (1<<7)
-// endregion
+// endregion GPIO
 
 // region UART
 typedef struct UART
@@ -70,7 +77,7 @@ typedef struct UART
 #define SEVEN_DATA_BITS (2 << 1)
 #define EIGHT_DATA_BITS (3 << 1)
 #define NINE_DATA_BITS (3 << 1)
-// endregion
+// endregion UART
 
 // region SPI
 
@@ -83,7 +90,7 @@ typedef struct SPI
 	 */
 	volatile uint8_t CONTROL;
 	/**
-	 * SPCR - SPI Status Register.
+	 * SPSR - SPI Status Register.
 	 * Contains SPIF, WCOL, ..., SPI2X bits
 	 */
 	volatile uint8_t STATUS;
@@ -93,8 +100,22 @@ typedef struct SPI
 	volatile uint8_t DATA;
 } SPI_t;
 
+#define SPI0 ((volatile SPI_t*) & SPCR0)
+#define SPI0_MOSI_PIN_MASK (1<<5)
+#define SPI0_MOSI_REG (PB)
+
+#define SPI0_SCK_PIN_MASK (1<<7)
+#define SPI0_SCK_REG (PB)
+
+#define SPI1 ((volatile SPI_t*) & SPCR1)
+#define SPI1_MOSI_PIN_MASK (1<<3)
+#define SPI1_MOSI_REG (PE)
+
+#define SPI1_SCK_PIN_MASK (1<<7)
+#define SPI1_SCK_REG (PD)
 
 
-// endregion
+
+// endregion SPI
 
 #endif

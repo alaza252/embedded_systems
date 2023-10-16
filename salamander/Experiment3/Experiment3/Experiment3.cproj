@@ -151,10 +151,19 @@
     <Compile Include="leds.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="long_serial_in.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="print_memory.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="sd.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="spi.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="switch.c">
