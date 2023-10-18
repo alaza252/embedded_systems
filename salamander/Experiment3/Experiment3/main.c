@@ -29,6 +29,9 @@ int main(void)
 	
 	//init LEDs
 	gpio_led_init(LED0_REG, LED0_PIN_MASK);
+
+	SDInfo sd_info;
+	uint8_t sd_card_init_error = sd_card_init(sd_info);
 	
 	sprintf(export_print_buffer(), "Hello! This line uses sprintf and the print buffer!\r\n");
 	uart_transmit_string(UART1, export_print_buffer(), 0);

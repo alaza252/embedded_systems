@@ -1,23 +1,23 @@
 /*
- * Experiment3.c
- *
- * Created: 10/16/2023 3:18:32 PM
- * Author : Sam Stockmann, Lavender Shannon
- */ 
+ * sd.h
+ */
 
 #ifndef SD_H
 #define SD_H
 
-#include "board.h"
+/** Represents SD Card v1.x types */
+#define SD_CARD_V1 (0)
+/** Represents SD Card v2.x+ types, which have high capacity support. */
+#define SD_CARD_NON_V1 (1)
 
-/** This error is returned when an invalid cmd_val is provided. */
-#define SD_ILLEGAL_CMD (1<<0)
-/** An error indicating the internal communication has had an error. With the current implementation, this indicates a SPI error */
-#define SD_COM_ERROR (1<<1)
+typedef struct SDInfo {
+	uint8_t card_type;
+} SDInfo;
 
-// Return value is an error flag
-uint8_t send_command(uint8_t cmd_val, uint32_t arg);
+#define SD_INIT_ERROR_COM (1)
+#define SD_INIT_ERROR_CMD0_FAIL (2)
 
+uint8_t sd_card_init(SDInfo &sd_info);
 
 
 #endif

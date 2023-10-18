@@ -160,6 +160,9 @@
     <Compile Include="print_memory.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="sd_spi.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="sd.c">
       <SubType>compile</SubType>
     </Compile>
