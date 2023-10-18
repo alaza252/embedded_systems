@@ -100,6 +100,9 @@ typedef struct SPI
 	volatile uint8_t DATA;
 } SPI_t;
 
+#define SD_CS_PIN_MASK (1<<4)
+#define SD_CS_REG (PB)
+
 #define SPI0 ((volatile SPI_t*) & SPCR0)
 #define SPI0_MOSI_PIN_MASK (1<<5)
 #define SPI0_MOSI_REG (PB)
