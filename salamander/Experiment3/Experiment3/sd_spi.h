@@ -41,6 +41,9 @@ uint8_t send_command(uint8_t cmd_val, uint32_t arg);
  */
 uint8_t receive_response(uint8_t num_bytes, uint8_t receive_array[]);
 
+void cs_pin_init();
+
+void cs_pin_set(uint8_t pin_val);
 
 
 #endif

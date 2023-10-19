@@ -9,11 +9,12 @@
 #include "uart_print.h"
 
 
-uint8_t sd_card_init(SDInfo &sd_info) {
+uint8_t sd_card_init(SDInfo *sd_info) {
 	sprintf(export_print_buffer(), "Initializing SD Card!\r\n");
 	uart_transmit_string(UART1, export_print_buffer(), 0);
+	cs_pin_init();
 
-	// TODO set /CS=1
+	cs_pin_set(1);
 	// we need to send 74 clock cycles, which we can do by sending 10 bytes because 8*10=80 which is >= 74
 	for (uint8_t i = 0; i < 10; i++) {
 		uint8_t transfer_val;
@@ -24,7 +25,7 @@ uint8_t sd_card_init(SDInfo &sd_info) {
 	}
 
 	{ // CMD0 block
-		// TODO set /CS=0
+		cs_pin_set(0);
 		if (send_command(0, 0) != 0) {
 			// Since this is for command 0, pretty much the only possible error is a communication error
 			return SD_INIT_ERROR_COM;
@@ -35,9 +36,11 @@ uint8_t sd_card_init(SDInfo &sd_info) {
 			return SD_INIT_ERROR_COM;
 		}
 		if (r1_response != 1) {
+			sprintf(export_print_buffer(), "R1 response is: %i!\r\n", r1_response);
+			uart_transmit_string(UART1, export_print_buffer(), 0);
 			return SD_INIT_ERROR_CMD0_FAIL;
 		}
-		// TODO set /CS=1
+		cs_pin_set(1);
 	}
 
 	sprintf(export_print_buffer(), "Sending CMD0 successful!\r\n");

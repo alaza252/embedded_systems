@@ -11,6 +11,7 @@
 #include "uart.h"
 #include "uart_print.h"
 #include "print_memory.h"
+#include "sd.h"
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -31,9 +32,9 @@ int main(void)
 	gpio_led_init(LED0_REG, LED0_PIN_MASK);
 
 	SDInfo sd_info;
-	uint8_t sd_card_init_error = sd_card_init(sd_info);
+	uint8_t sd_card_init_error = sd_card_init(&sd_info);
 	
-	sprintf(export_print_buffer(), "Hello! This line uses sprintf and the print buffer!\r\n");
+	sprintf(export_print_buffer(), "Error was: %i!\r\n", sd_card_init_error);
 	uart_transmit_string(UART1, export_print_buffer(), 0);
 	
 	//unsigned char in_memory_string[] = "This is a string with more than 30 characters. Sam and Lavender worked on this project together!\r\n";

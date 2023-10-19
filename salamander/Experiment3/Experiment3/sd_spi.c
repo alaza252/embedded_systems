@@ -7,6 +7,7 @@
 
 #include "sd_spi.h"
 #include "spi.h"
+#include "io.h"
 
 #define CRC_POLY (0x89u)
 
@@ -78,8 +79,10 @@ uint8_t receive_response(uint8_t num_bytes, uint8_t receive_array[]) {
 			return SD_COM_ERROR;
 		}
 		timeout++;
-	} while ((transfer_val & 0x80) != 0 && timeout != 0);
+	} while (((transfer_val & 0x80) != 0 )&& (timeout != 0));
 
+	//sprintf(export_print_buffer(), "Timeout is: %i!\r\n", timeout);
+	//uart_transmit_string(UART1, export_print_buffer(), 0);
 	if ((transfer_val & 0x80) != 0) { // The most significant bit must be 0 for this to be a valid R1 response.
 		return SD_RECEIVE_TIMEOUT;
 	}
@@ -88,6 +91,8 @@ uint8_t receive_response(uint8_t num_bytes, uint8_t receive_array[]) {
 
 	// we now know that transfer_val is in fact an R1 response, but that doesn't mean there aren't errors in R1
 
+	//sprintf(export_print_buffer(), "Transfer val is : %i!\r\n", transfer_val);
+	//uart_transmit_string(UART1, export_print_buffer(), 0);
 	receive_array[0] = transfer_val;
 	if (transfer_val != 0) {
 		// This is expected when receiving a response for CMD0.
@@ -110,4 +115,16 @@ uint8_t receive_response(uint8_t num_bytes, uint8_t receive_array[]) {
 
 	spi_transfer(SD_SPI_PORT, 0xFF, &transfer_val);
 	return 0;
+}
+
+void cs_pin_init() {
+	gpio_output_init(SD_CS_REG, SD_CS_PIN_MASK);
+}
+
+void cs_pin_set(uint8_t pin_val) {
+	if (pin_val == 0) {
+		gpio_output_clear(SD_CS_REG, SD_CS_PIN_MASK);
+	} else {
+		gpio_output_set(SD_CS_REG, SD_CS_PIN_MASK);
+	}
 }
