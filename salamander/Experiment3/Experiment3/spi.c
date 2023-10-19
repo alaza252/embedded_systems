@@ -1,5 +1,5 @@
 /*
- * Experiment3.c
+ * spi.c
  *
  * Created: 10/16/2023 2:10:56 PM
  * Author : Sam Stockmann, Lavender Shannon
@@ -93,7 +93,7 @@ uint8_t spi_master_init(volatile SPI_t *addr, uint32_t clock_rate) {
 	//uart_transmit_string(UART1, export_print_buffer(), 0);
 	uint8_t divider_value = 0b110;
 	// temporary change of !=
-	if (divider_value & (1 << 2) == 0) { // if bit 2 of divider_value is 0, then we need to enable SPI2X to get a smaller divider
+	if ((divider_value & (1 << 2)) == 0) { // if bit 2 of divider_value is 0, then we need to enable SPI2X to get a smaller divider
 		addr->STATUS |= (1 << SPI2X);
 	} else {
 		addr->STATUS &= ~(1 << SPI2X);

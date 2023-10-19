@@ -14,6 +14,8 @@
 
 #define SD_SPI_PORT SPI0
 
+#define SD_R1_ERROR_MASK (0b01111100)
+
 // Note the use of error codes here rather than error flags.
 /** When returned by send_command, this indicates an argument error. When returned by receive_response, this indicates the R1 response is indicating an illegal command. */
 #define SD_ILLEGAL_CMD (1)

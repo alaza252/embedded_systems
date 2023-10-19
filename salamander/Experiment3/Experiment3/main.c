@@ -34,8 +34,19 @@ int main(void)
 	SDInfo sd_info;
 	uint8_t sd_card_init_error = sd_card_init(&sd_info);
 	
-	sprintf(export_print_buffer(), "Error was: %i!\r\n", sd_card_init_error);
+	if (sd_card_init_error != 0) {
+		sprintf(export_print_buffer(), "Error was: %i!\r\n", sd_card_init_error);
+		uart_transmit_string(UART1, export_print_buffer(), 0);
+		return 0;
+	}
+	sprintf(export_print_buffer(), "Card type value: %i, card capacity value: %i\r\n", sd_info.card_type, sd_info.capacity);
 	uart_transmit_string(UART1, export_print_buffer(), 0);
+	
+	spi_master_init(SPI0, 25000000UL);
+	
+	for (;;) {
+		
+	}
 	
 	//unsigned char in_memory_string[] = "This is a string with more than 30 characters. Sam and Lavender worked on this project together!\r\n";
 	//print_memory(in_memory_string, 0);

@@ -1,5 +1,5 @@
 /*
- * Experiment3.c
+ * spi.h
  *
  * Created: 10/16/2023 2:10:02 PM
  * Author : Sam Stockmann, Lavender Shannon

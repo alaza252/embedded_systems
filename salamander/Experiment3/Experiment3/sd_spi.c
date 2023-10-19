@@ -44,9 +44,11 @@ uint8_t send_command(uint8_t cmd_val, uint32_t arg) {
 	uint8_t raw_message[5]; // keep track of the raw message for the CRC calculation
 	raw_message[0] = (0x40|cmd_val);
 	transfer_err = spi_transfer(SD_SPI_PORT, (0x40|cmd_val), &transfer_val);
+	
 	if (transfer_err != 0) {
 		return SD_COM_ERROR;
 	}
+		
 	for(uint8_t i = 0; i < 4; i++) {
 		uint8_t send_value = (uint8_t) (arg >> (24-(i*8))); // send MSB first
 		raw_message[i + 1] = send_value;
@@ -60,6 +62,7 @@ uint8_t send_command(uint8_t cmd_val, uint32_t arg) {
 	if (transfer_err != 0) {
 		return SD_COM_ERROR;
 	}
+	
 	return 0;
 }
 
@@ -94,18 +97,14 @@ uint8_t receive_response(uint8_t num_bytes, uint8_t receive_array[]) {
 	//sprintf(export_print_buffer(), "Transfer val is : %i!\r\n", transfer_val);
 	//uart_transmit_string(UART1, export_print_buffer(), 0);
 	receive_array[0] = transfer_val;
-	if (transfer_val != 0) {
-		// This is expected when receiving a response for CMD0.
-		// Note: This deviates from the assignment guidelines a bit because according to the assignment an R1 response of 1 is not an error.
-		//   However, I believe that is incorrect because we ONLY expect that for CMD0.
-		//   So, the code that uses this function for CMD0 will have to account for this feature.
-
+	if ((transfer_val & SD_R1_ERROR_MASK) != 0) {
 		spi_transfer(SD_SPI_PORT, 0xFF, &transfer_val);
 		return SD_RECEIVE_R1_ERROR;
 	}
 
 	for (uint8_t i = 1; i < num_bytes; i++) {
 		transfer_err = spi_transfer(SD_SPI_PORT, 0xFF, &transfer_val);
+		receive_array[i] = transfer_val; // needed to add this when implementing CMD8
 		if (transfer_err != 0) {
 			// We don't have to send 0xFF on the bus here because the caller of the function should know that an error like this requires
 			//   reinitialization of the SD card for it to be usable again.
