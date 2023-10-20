@@ -38,7 +38,6 @@ SUBDIRS :=
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
 ../GPIO_Outputs.c \
-../LEDS.c \
 ../Long_Serial_In.c \
 ../main.c \
 ../print_memory.c \
@@ -56,7 +55,6 @@ ASM_SRCS +=
 
 OBJS +=  \
 GPIO_Outputs.o \
-LEDS.o \
 Long_Serial_In.o \
 main.o \
 print_memory.o \
@@ -67,7 +65,6 @@ UART_Print.o
 
 OBJS_AS_ARGS +=  \
 GPIO_Outputs.o \
-LEDS.o \
 Long_Serial_In.o \
 main.o \
 print_memory.o \
@@ -78,7 +75,6 @@ UART_Print.o
 
 C_DEPS +=  \
 GPIO_Outputs.d \
-LEDS.d \
 Long_Serial_In.d \
 main.d \
 print_memory.d \
@@ -89,7 +85,6 @@ UART_Print.d
 
 C_DEPS_AS_ARGS +=  \
 GPIO_Outputs.d \
-LEDS.d \
 Long_Serial_In.d \
 main.d \
 print_memory.d \
@@ -113,13 +108,6 @@ LINKER_SCRIPT_DEP+=
 
 # AVR32/GNU C Compiler
 ./GPIO_Outputs.o: .././GPIO_Outputs.c
-	@echo Building file: $<
-	@echo Invoking: AVR/GNU C Compiler : 5.4.0
-	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pb -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega324pb" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
-./LEDS.o: .././LEDS.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 5.4.0
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\include"  -Og -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega324pb -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.6.364\gcc\dev\atmega324pb" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

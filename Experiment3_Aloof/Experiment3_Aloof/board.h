@@ -99,7 +99,7 @@ typedef struct SPI{
 
 
 /***** SPI ******/
-#define SPI0 ((volatile uint8_t *) 0x4C)
+#define SPI0 ((volatile SPI_t*) & SPCR0)
 #define SPI0_PORT (PB)
 #define SPI0_MOSI (1<<5)//needs to be set as an output with an initial value of 1
 #define SPI0_MISO (1<<6)
@@ -120,14 +120,25 @@ typedef struct SPI{
 /***** SD ******/
 #define SD_CARD_PORT
 #define ERROR_CODE (0xFF)
-#define SD_CS_PORT (PB)
+#define timeout_error (0xFA)
+#define COM_ERROR (0xFC)
+#define SDINITERROR (0xEF)
+#define VOLTAGE_ERROR (0xEE)
+#define CARD_TYPE_ERROR (0xED)
+#define R1_ERROR (0xFB)
+#define no_errors (0x00)
+#define SPI_error (0xFD)
 #define CHIP_SELECT (1<<4)
+#define SD_CS_PORT (PB)
 #define SD_CS_PIN  (1<<4)
+#define SD_SPI_port (SPI0)
 
 #define CMD0 (0U)
 #define CMD0_ARG (0x00000000)
+#define CMD0_SEND_VALUE (0x95)
 #define CMD8 (8U)
 #define CMD8_ARG (0x000001AA)
+#define CMD8_SEND_VALUE (0x87)
 #define CMD58 (58U)
 #define CMD58_ARG (0x00000000)
 

@@ -16,7 +16,7 @@ SPI.d SPI.o: .././SPI.c .././SPI.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
  .././Long_Serial_In.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h \
- .././UART.h .././GPIO_Outputs.h
+ .././UART.h .././GPIO_Outputs.h .././SD.h
 
 .././SPI.h:
 
@@ -57,3 +57,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 .././UART.h:
 
 .././GPIO_Outputs.h:
+
+.././SD.h:

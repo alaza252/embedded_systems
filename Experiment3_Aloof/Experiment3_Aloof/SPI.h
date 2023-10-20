@@ -16,11 +16,11 @@
 #include <stdlib.h>
 #include "UART.h"
 #include "GPIO_Outputs.h"
+#include "SD.h"
 
 
 uint8_t SPI_master_init(volatile SPI_t *SPI_addr, uint32_t clock_freq);
 uint8_t SPI_transmit(volatile SPI_t *SPI_addr, uint8_t send_value);
-uint8_t SPI_receive(volatile SPI_t *SPI_addr,uint8_t send_value,uint8_t *rcv_value);
-uint8_t SPI_transfer(volatile SPI_t *SPI_addr, uint8_t send_value);
+uint8_t SPI_transfer(volatile SPI_t *SPI_addr, uint8_t send_value,uint8_t *rec_val);
 
 #endif /* SPI_H_ */

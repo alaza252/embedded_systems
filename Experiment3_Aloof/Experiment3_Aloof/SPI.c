@@ -10,7 +10,7 @@
 uint8_t SPI_master_init(volatile SPI_t *SPI_addr, uint32_t clock_freq)
 {
 	uint8_t divider;
-	divider = ((F_CPU/F_DIV)/(clock_freq));
+	divider = (uint8_t)((F_CPU/F_DIV)/(clock_freq));
 	
 	(SPI_addr->SPCR) = ((1<<SPE)|(1<<MSTR)|(CPOL_OFFSET)|(CPHA_OFFSET<<CPHA)|(0<<0));
 	
@@ -31,7 +31,7 @@ uint8_t SPI_master_init(volatile SPI_t *SPI_addr, uint32_t clock_freq)
 	
 	uint8_t CPOL_BIT= (SPI_addr->SPCR);
 	CPOL_BIT&=CPOL_OFFSET;
-	if(&(SPI_addr->SPCR) == SPI0)
+	if(SPI_addr == SPI0)
 	{
 		//MOSI initialized to a 1 output. port B bit 5
 		GPIO_Output_Set(PB,SPI0_MOSI);
@@ -67,35 +67,21 @@ uint8_t SPI_master_init(volatile SPI_t *SPI_addr, uint32_t clock_freq)
 
 uint8_t SPI_transmit(volatile SPI_t *SPI_addr, uint8_t send_value)
 {
-	//wait until SPIF bit in SPSR register is high
-	uint8_t status;
-	do
-	{
-		status = (SPI_addr -> SPSR)&(1<<3);
-	}
-	while(status == 0);
-	SPI_addr -> SPDR = send_value; //put send_value into data register
-	return 1U;
+	uint8_t dummy_var;
+	return SPI_transfer(SPI_addr,send_value,&dummy_var);
 }
 
-uint8_t SPI_receive(volatile SPI_t *SPI_addr)
-{
-	//wait until SPIF bit in SPSR register is high
-	uint8_t status;
-	do
-	{
-		status = (SPI_addr -> SPSR)&(1<<3);
-	}while(status==0);
-	return SPI_addr -> SPDR;	// return value in SPDR
-}
 
-uint8_t SPI_transfer(volatile SPI_t *SPI_addr, uint8_t send_value)
+uint8_t SPI_transfer(volatile SPI_t *SPI_addr, uint8_t send_value, uint8_t *rec_val)
 {
-	uint8_t status;
 	SPI_addr->SPDR=send_value;
-	do
+	while((SPI_addr->SPSR & (1<<SPIF))==0)
 	{
-		status=(SPI_addr->SPSR);
-	}while((status&0x80)==0);
-	return (SPI_addr-> SPDR);
+		
+	}
+	(*rec_val)=SPI_addr->SPDR;
+	return 0;
+
 }
+
+

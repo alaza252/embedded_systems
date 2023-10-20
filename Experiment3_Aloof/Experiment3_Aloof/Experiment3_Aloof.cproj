@@ -41,7 +41,7 @@
       </framework-data>
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.edbg</avrtool>
-    <avrtoolserialnumber>ATML2589040200001990</avrtoolserialnumber>
+    <avrtoolserialnumber>ATML2589040200001310</avrtoolserialnumber>
     <avrdeviceexpectedsignature>0x1E9517</avrdeviceexpectedsignature>
     <avrtoolinterface>JTAG</avrtoolinterface>
     <com_atmel_avrdbg_tool_edbg>
@@ -61,7 +61,7 @@
         <InterfaceName>JTAG</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.edbg</ToolType>
-      <ToolNumber>ATML2589040200001990</ToolNumber>
+      <ToolNumber>ATML2589040200001310</ToolNumber>
       <ToolName>EDBG</ToolName>
     </com_atmel_avrdbg_tool_edbg>
     <avrtoolinterfaceclock>220000</avrtoolinterfaceclock>
@@ -152,12 +152,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="GPIO_Outputs.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="LEDS.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="LEDS.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Long_Serial_In.c">

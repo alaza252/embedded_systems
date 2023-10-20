@@ -11,22 +11,21 @@
 
 #include <stdio.h>
 #include "board.h"
-#include "Long_Serial_In.h"
 #include <stdlib.h>
 #include "UART.h"
 #include "GPIO_Outputs.h"
 #include "SPI.h"
 
 
-
+uint8_t get_crc(uint8_t message[], uint8_t length);
 
 //step 3
-uint8_t send_command(volatile SPI_t *SPI_addr, uint8_t command, uint32_t argument);
+uint8_t send_command(uint8_t command, uint32_t argument);
 
 //step 4
-uint8_t receive_response(volatile SPI_t *SPI_addr, uint8_t number_of_bytes, uint8_t * arrary_name);
+uint8_t receive_response( uint8_t number_of_bytes, uint8_t * arrary_name);
 
 //step 5
-uint8_t sd_card_init(volatile SPI_t *SPI_addr)
+uint8_t sd_card_init();
 
 #endif /* SD_H_ */
