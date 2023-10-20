@@ -116,6 +116,16 @@ uint8_t receive_response(uint8_t num_bytes, uint8_t receive_array[]) {
 	return 0;
 }
 
+uint8_t read_block(uint16_t num_bytes, uint8_t data_arr[]) {
+	uint8_t r1_response;
+	uint8_t transfer_err = receive_response(1, &r1_response);
+
+
+
+	// TODO make this function
+	return 0;
+}
+
 void cs_pin_init() {
 	gpio_output_init(SD_CS_REG, SD_CS_PIN_MASK);
 }

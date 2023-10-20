@@ -43,6 +43,15 @@ uint8_t send_command(uint8_t cmd_val, uint32_t arg);
  */
 uint8_t receive_response(uint8_t num_bytes, uint8_t receive_array[]);
 
+
+/**
+ * Similar to receive_response, but this function expects to be reading data.
+ * Since the assignment requires this function to wait for the R1 response, then wait for data, we will actually call receive_response from this function
+ *
+ */
+uint8_t read_block(uint16_t num_bytes, uint8_t data_arr[]);
+
+
 void cs_pin_init();
 
 void cs_pin_set(uint8_t pin_val);

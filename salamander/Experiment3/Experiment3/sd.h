@@ -35,6 +35,4 @@ typedef struct SDInfo {
 
 uint8_t sd_card_init(SDInfo *sd_info);
 
-uint8_t read_block(uint16_t num_bytes, uint8_t data_arr[]);
-
 #endif

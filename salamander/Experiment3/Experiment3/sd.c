@@ -227,7 +227,3 @@ uint8_t sd_card_init(SDInfo *sd_info) {
 	return 0;
 }
 
-uint8_t read_block(uint16_t num_bytes, uint8_t data_arr[]) {
-	// TODO make this function
-	return 0;
-}
