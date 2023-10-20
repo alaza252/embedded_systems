@@ -44,8 +44,10 @@ int main(void)
 	
 	spi_master_init(SPI0, 25000000UL);
 	
-	for (;;) {
-		
+	for (;0;) {
+		uint32_t block_num = long_serial_input(UART1);
+		sprintf(export_print_buffer(), "Block number: %i!\r\n", block_num);
+		uart_transmit_string(UART1, export_print_buffer(), 0);
 	}
 	
 	//unsigned char in_memory_string[] = "This is a string with more than 30 characters. Sam and Lavender worked on this project together!\r\n";
@@ -62,14 +64,14 @@ int main(void)
 			uart_transmit(UART1, rcvd_val);
 		}
 		
-		led_state = !led_state;
-		if (led_state) {
-			gpio_led_on(LED0_REG, LED0_PIN_MASK);
-		} else {
-			gpio_led_off(LED0_REG, LED0_PIN_MASK);
-		}
+// 		led_state = !led_state;
+// 		if (led_state) {
+// 			gpio_led_on(LED0_REG, LED0_PIN_MASK);
+// 		} else {
+// 			gpio_led_off(LED0_REG, LED0_PIN_MASK);
+// 		}
 		
-		_delay_ms(500);
+		//_delay_ms(500);
 	}
 }
 

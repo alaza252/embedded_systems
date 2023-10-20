@@ -29,6 +29,7 @@
 #define SD_RECEIVE_TIMEOUT (32)
 /** This error indicates that R1 was read into receive_array[0], but not subsequent bytes were read because there was an error in R1*/
 #define SD_RECEIVE_R1_ERROR (33)
+#define SD_READ_DATA_TOKEN_ERROR (45)
 
 /**
  * Return value is an error code (not an error flag). A value of 0 represents no error.
@@ -48,6 +49,7 @@ uint8_t receive_response(uint8_t num_bytes, uint8_t receive_array[]);
  * Similar to receive_response, but this function expects to be reading data.
  * Since the assignment requires this function to wait for the R1 response, then wait for data, we will actually call receive_response from this function
  *
+ * num_bytes: number of bytes to read after the data start token (this does not include the R1 byte!)
  */
 uint8_t read_block(uint16_t num_bytes, uint8_t data_arr[]);
 
