@@ -61,6 +61,7 @@ typedef struct UART
 #define UART1 ((volatile UART_t*) &UCSR1A)
 #define UART2 ((volatile UART_t*) &UCSR2A)
 
+// we define these UART constants here because they are specific to the board itself.
 #define ASYNC_MODE (0 << 6)
 #define SYNC_MODE (1 << 6)
 #define SPI_MODE (3 << 6)
@@ -84,6 +85,7 @@ typedef struct UART
 typedef struct SPI
 {
 	// Lecture 09 contains good information for all of these registers.
+	// Notice the naming of these registers. Naming these registers sensible things makes code much easier to read, even if it isn't as consistent with the documentation now.
 	/** SPCR - SPI Control Register.
 	 *
 	 * Note that two least significant bits are used to determine the SPI clock rate. SPI2X also supplements these values

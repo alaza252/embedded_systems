@@ -188,7 +188,6 @@ uint8_t read_block(uint16_t num_bytes, uint8_t data_arr[]) {
 		return SD_COM_ERROR;
 	}
 
-	// TODO make this function
 	return 0;
 }
 

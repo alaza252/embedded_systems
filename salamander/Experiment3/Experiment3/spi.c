@@ -14,8 +14,6 @@
 #define CLOCK_POLARITY_BIT (0) // should be shifted by CPOL (3)
 #define CLOCK_PHASE_BIT (0) // should be shifted by CPHA (2)
 
-//#define SPI_MSB_FIRST (0 << 5)
-//#define SPI_LSB_FIRST (1 << 5)
 #define SPI_MSB_FIRST (0 << DORD)
 #define SPI_LSB_FIRST (1 << DORD)
 
@@ -25,11 +23,10 @@
  * A value of 0b001 is a shift of 1 (multiply by 2).
  * Notice that 0b000 will never be returned from this method.
  *
- * To get the bits you need to put into SPR[1], SPR[0], SPI2X, you first need to subtract 1, then take the not of the SPI2X bit. The other 2 bits are the same
+ * To get the bits you need to put into SPR[1], SPR[0], SPI2X, make sure to shift to the right to get SPR[1],SPR[0], and make sure to take the not of the least significant bit to get SPI2X
  */
 uint8_t get_divider_shift_amount(uint32_t clock_rate) {
 	uint8_t divider = (uint8_t) ((F_CPU / OSC_DIV + clock_rate - 1) / clock_rate); // round divider up
-
 
 	uint8_t shift_amount = 0;
 	// for 2 (0b10), we want a value of 1 (1 << 1 = 2)
@@ -50,8 +47,7 @@ void set_mosi(volatile SPI_t *addr, uint8_t bit_val) {
 		else {
 			gpio_output_clear(SPI0_MOSI_REG, SPI0_MOSI_PIN_MASK);
 		}
-	}
-	else { // else assume addr is SPI1
+	} else { // else assume addr is SPI1
 		if (bit_val != 0) {
 			gpio_output_set(SPI1_MOSI_REG, SPI1_MOSI_PIN_MASK);
 		}
@@ -98,10 +94,10 @@ uint8_t spi_master_init(volatile SPI_t *addr, uint32_t clock_rate) {
 	} else {
 		divider_value = shift_amount - 1;
 	}
+	// NOTE: This print line is very useful for debugging, but may throw off your sillyscope if you are listening for particular lines going high/low
 	sprintf(export_print_buffer(), "Divider value is: %i!\r\n", divider_value);
 	uart_transmit_string(UART1, export_print_buffer(), 0);
-	//uint8_t divider_value = 0b101;
-	// temporary change of !=
+
 	if ((divider_value & 1) == 0) { // if least significant bit of divider_value is 0, then we need to enable SPI2X to get a smaller divider
 		addr->STATUS |= (1 << SPI2X);
 	} else {

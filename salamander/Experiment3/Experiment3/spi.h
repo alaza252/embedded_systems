@@ -12,7 +12,9 @@
 
 uint8_t spi_master_init(volatile SPI_t *addr, uint32_t clock_rate);
 
-// Return val used for error flags
+/**
+ * Return value is error flags. The current implementation will always return 0 (which indicates no errors)
+ */
 uint8_t spi_transfer(volatile SPI_t *addr, uint8_t send_val, uint8_t *rcv_val);
 
 uint8_t spi_transmit(volatile SPI_t *addr, uint8_t send_val);

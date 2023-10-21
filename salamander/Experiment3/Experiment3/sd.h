@@ -8,6 +8,12 @@
 #ifndef SD_H
 #define SD_H
 
+/*
+At this point you're probably wondering: why sd, sd_spi, and spi?
+Well, the idea was that the main function would only ever call functions in here, and the other two files were implementation files.
+However, that's not quite what happened
+*/
+
 #include "board.h"
 
 /** Represents SD Card v1.x types */

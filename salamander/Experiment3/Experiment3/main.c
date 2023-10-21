@@ -19,10 +19,6 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
-#include <avr/pgmspace.h>
-
-
-const char STEP_7_FLASH_STRING[64] PROGMEM = {"This is an example of a string stored in flash!\n\r"};
 
 int main(void)
 {
@@ -47,7 +43,7 @@ int main(void)
 	uart_transmit_string(UART1, export_print_buffer(), 0);
 	
 	//spi_master_init(SPI0, 25000000UL);
-	spi_master_init(SPI0, 8000000UL); // 8MHz is the maximum of our board
+	spi_master_init(SPI0, 8000000UL); // 8MHz is the maximum of our board, if we try to use a value higher than this, the function that calculates the divider will get very angry
 	
 	for (;;) {
 		uint32_t block_num = long_serial_input(UART1);

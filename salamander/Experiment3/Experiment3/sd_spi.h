@@ -46,8 +46,7 @@ uint8_t receive_response(uint8_t num_bytes, uint8_t receive_array[]);
 
 
 /**
- * Similar to receive_response, but this function expects to be reading data.
- * Since the assignment requires this function to wait for the R1 response, then wait for data, we will actually call receive_response from this function
+ * Similar to receive_response, but this function expects to be reading large amounts of data, rather than a couple
  *
  * num_bytes: number of bytes to read after the data start token (this does not include the R1 byte!)
  */

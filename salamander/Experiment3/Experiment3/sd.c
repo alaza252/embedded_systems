@@ -45,20 +45,11 @@ uint8_t sd_card_init(SDInfo *sd_info) {
 		}
 		
 		if (r1_response != 1) {
-			//sprintf(export_print_buffer(), "R1 response is: %i!\r\n", r1_response);
-			//uart_transmit_string(UART1, export_print_buffer(), 0);
 			return SD_INIT_R1_ERROR;
 		}
 		
 		cs_pin_set(1);
 	}
-
-	//sprintf(export_print_buffer(), "Sending CMD0 successful!\r\n");
-	//uart_transmit_string(UART1, export_print_buffer(), 0);
-	//{ // (temporary?)  transfer to fix stuff maybe
-		//uint8_t transfer_val;
-		//uint8_t transfer_err = spi_transfer(SD_SPI_PORT, 0xFF, &transfer_val);
-	//}
 
 	{ // CMD8 block
 		cs_pin_set(0);
@@ -82,26 +73,14 @@ uint8_t sd_card_init(SDInfo *sd_info) {
 		}
 		
 		if (sd_info -> card_type == SD_CARD_NON_V1) {
-			//for (uint8_t i = 0; i < 5; i++) {
-				//sprintf(export_print_buffer(), "R7 %i: %i\r\n", i, r7_response[i]);
-				//uart_transmit_string(UART1, export_print_buffer(), 0);
-			//}
 			if (r7_response[0] != 1) { // check for unexpected R1 status values
-				//sprintf(export_print_buffer(), "R1 response is: %i!\r\n", r7_response);
-				//uart_transmit_string(UART1, export_print_buffer(), 0);
 				return SD_INIT_R1_ERROR;
 			}
 			uint8_t voltage_flags = r7_response[3];
 			if ((voltage_flags & 1) == 0) { // check for correct voltage range
-				
-				//sprintf(export_print_buffer(), "Got voltage error! voltage_flags: %i\r\n", voltage_flags);
-				//uart_transmit_string(UART1, export_print_buffer(), 0);
 				return SD_INIT_VOLTAGE_ERROR;
 			}
 			if (r7_response[4] != 0xAA) { // check for echo value
-				
-				//sprintf(export_print_buffer(), "Echo error! echo_value: %i\r\n", r7_response[4]);
-				//uart_transmit_string(UART1, export_print_buffer(), 0);
 				return SD_INIT_R7_ECHO_ERROR;
 			}
 		}
@@ -111,9 +90,6 @@ uint8_t sd_card_init(SDInfo *sd_info) {
 	if (sd_info -> card_type == SD_CARD_V1) {
 		return SD_INIT_V1_NOT_SUPPORTED;
 	}
-	
-	//sprintf(export_print_buffer(), "Sending CMD8 successful!\r\n");
-	//uart_transmit_string(UART1, export_print_buffer(), 0);
 	
 	{ // CMD58
 		cs_pin_set(0);
@@ -134,12 +110,6 @@ uint8_t sd_card_init(SDInfo *sd_info) {
 		if (r3_response[0] != 1) { // check for unexpected R1 status values
 			return SD_INIT_R1_ERROR;
 		}
-		
-// 		for (uint8_t i = 0; i < 5; i++) {
-// 			sprintf(export_print_buffer(), "R3 %i: %i\r\n", i, r3_response[i]);
-// 			uart_transmit_string(UART1, export_print_buffer(), 0);
-// 		}
-		//uint32_t ocr = (((uint32_t) r3_response[1]) << 24UL) | (((uint32_t) r3_response[2]) << 16UL) | (((uint32_t) r3_response[3]) << 8UL) | (uint32_t) r3_response[4];
 		
 		if ((r3_response[2] & 0b00110000) == 0) { // this is true when the operating voltage is out of the range 3.2-3.4
 			return SD_INIT_VOLTAGE_ERROR;
