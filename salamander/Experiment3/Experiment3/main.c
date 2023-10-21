@@ -11,7 +11,11 @@
 #include "uart.h"
 #include "uart_print.h"
 #include "print_memory.h"
+#include "spi.h"
+#include "sd_spi.h"
 #include "sd.h"
+#include "long_serial_in.h"
+#include "print_memory.h"
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -42,36 +46,32 @@ int main(void)
 	sprintf(export_print_buffer(), "Card type value: %i, card capacity value: %i\r\n", sd_info.card_type, sd_info.capacity);
 	uart_transmit_string(UART1, export_print_buffer(), 0);
 	
-	spi_master_init(SPI0, 25000000UL);
+	//spi_master_init(SPI0, 25000000UL);
+	//spi_master_init(SPI0, 8000000UL); // 8MHz is the maximum of our board
 	
-	for (;0;) {
+	for (;;) {
 		uint32_t block_num = long_serial_input(UART1);
-		sprintf(export_print_buffer(), "Block number: %i!\r\n", block_num);
+		sprintf(export_print_buffer(), "Block number: %i!\r\n", (uint8_t) block_num); // this only supports showing 8 bit numbers, but that's OK. higher values are still supported, they just aren't printed correctly
 		uart_transmit_string(UART1, export_print_buffer(), 0);
-	}
-	
-	//unsigned char in_memory_string[] = "This is a string with more than 30 characters. Sam and Lavender worked on this project together!\r\n";
-	//print_memory(in_memory_string, 0);
-
-	uint8_t led_state = 0;
-
-	while(1)
-	{
+		uint8_t error;
 		
-		uint8_t rcvd_val;
-		
-		while (uart_receive_nb(UART1, &rcvd_val) == UART_RECEIVE_SUCCESS) {
-			uart_transmit(UART1, rcvd_val);
+		cs_pin_set(0);
+		error = send_command(17, block_num);
+		if (error != 0) {
+			sprintf(export_print_buffer(), "Got error when sending: %i!\r\n", error);
+			uart_transmit_string(UART1, export_print_buffer(), 0);
+		} else {
+			uint8_t data[512];
+			error = read_block(512, data);
+			if (error != 0) {
+				sprintf(export_print_buffer(), "Got error when reading: %i!\r\n", error);
+				uart_transmit_string(UART1, export_print_buffer(), 0);
+			} else {
+				print_memory(data, 512);
+			}
 		}
 		
-// 		led_state = !led_state;
-// 		if (led_state) {
-// 			gpio_led_on(LED0_REG, LED0_PIN_MASK);
-// 		} else {
-// 			gpio_led_off(LED0_REG, LED0_PIN_MASK);
-// 		}
-		
-		//_delay_ms(500);
+		cs_pin_set(1);
 	}
 }
 

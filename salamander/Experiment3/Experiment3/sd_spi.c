@@ -9,6 +9,10 @@
 #include "spi.h"
 #include "io.h"
 
+#include <stdio.h>
+#include "uart.h"
+#include "uart_print.h"
+
 #define CRC_POLY (0x89u)
 
 uint8_t get_crc(uint8_t message[], uint8_t length) {
@@ -140,7 +144,7 @@ uint8_t read_block(uint16_t num_bytes, uint8_t data_arr[]) {
 
 	uint8_t transfer_val;
 
-	uint8_t timeout = 0; // Since this is an 8 bit value, we expect the timeout to be 256 tries
+	uint16_t timeout = 0; // Since this is an 8 bit value, we expect the timeout to be 256 tries
 	do {
 		transfer_err = spi_transfer(SD_SPI_PORT, 0xFF, &transfer_val);
 		if (transfer_err != 0) {
@@ -154,6 +158,8 @@ uint8_t read_block(uint16_t num_bytes, uint8_t data_arr[]) {
 	}
 	if ((transfer_val & 0xF0) == 0) { // upper 4 bits are cleared
 		uint8_t data_error = transfer_val & 0x0F; // lower 4 bits indicate error
+		sprintf(export_print_buffer(), "Data error: %i, token: %i timeout: %i\r\n", data_error, transfer_val, timeout);
+		uart_transmit_string(UART1, export_print_buffer(), 0);
 		return SD_READ_DATA_TOKEN_ERROR;		
 	}
 	// now if we are here, we have just received the data start token, and we can read in some values :)

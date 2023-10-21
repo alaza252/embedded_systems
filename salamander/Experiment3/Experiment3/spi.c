@@ -7,6 +7,9 @@
 
 #include "spi.h"
 #include "io.h"
+#include "uart.h"
+#include <stdio.h>
+#include "uart_print.h"
 
 #define CLOCK_POLARITY_BIT (0) // should be shifted by CPOL (3)
 #define CLOCK_PHASE_BIT (0) // should be shifted by CPHA (2)
@@ -88,9 +91,9 @@ uint8_t spi_master_init(volatile SPI_t *addr, uint32_t clock_rate) {
 	
 	// remember for a divider value of 2 (1 << _1_), get_divider_shift_amount() returns 1
 	//   For a "shift amount" of 1, we need to use a value of 0b100 for SPI2X,SPR[1],SPR[0]
-	//uint8_t divider_value = get_divider_shift_amount(clock_rate) - 1;
-	//sprintf(export_print_buffer(), "Divider value is: %i!\r\n", divider_value);
-	//uart_transmit_string(UART1, export_print_buffer(), 0);
+// 	uint8_t divider_value = get_divider_shift_amount(clock_rate) - 1;
+// 	sprintf(export_print_buffer(), "Divider value is: %i!\r\n", divider_value);
+// 	uart_transmit_string(UART1, export_print_buffer(), 0);
 	uint8_t divider_value = 0b110;
 	// temporary change of !=
 	if ((divider_value & (1 << 2)) == 0) { // if bit 2 of divider_value is 0, then we need to enable SPI2X to get a smaller divider
