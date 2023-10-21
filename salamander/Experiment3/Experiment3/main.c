@@ -47,7 +47,7 @@ int main(void)
 	uart_transmit_string(UART1, export_print_buffer(), 0);
 	
 	//spi_master_init(SPI0, 25000000UL);
-	//spi_master_init(SPI0, 8000000UL); // 8MHz is the maximum of our board
+	spi_master_init(SPI0, 8000000UL); // 8MHz is the maximum of our board
 	
 	for (;;) {
 		uint32_t block_num = long_serial_input(UART1);

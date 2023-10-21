@@ -25,7 +25,7 @@
  * A value of 0b001 is a shift of 1 (multiply by 2).
  * Notice that 0b000 will never be returned from this method.
  *
- * To get the bits you need to put into SPI2X, SPR[1], SPR[0], you first need to subtract 1, then take the not of the SPI2X bit. The other 2 bits are the same
+ * To get the bits you need to put into SPR[1], SPR[0], SPI2X, you first need to subtract 1, then take the not of the SPI2X bit. The other 2 bits are the same
  */
 uint8_t get_divider_shift_amount(uint32_t clock_rate) {
 	uint8_t divider = (uint8_t) ((F_CPU / OSC_DIV + clock_rate - 1) / clock_rate); // round divider up
@@ -90,18 +90,24 @@ uint8_t spi_master_init(volatile SPI_t *addr, uint32_t clock_rate) {
 	
 	
 	// remember for a divider value of 2 (1 << _1_), get_divider_shift_amount() returns 1
-	//   For a "shift amount" of 1, we need to use a value of 0b100 for SPI2X,SPR[1],SPR[0]
-// 	uint8_t divider_value = get_divider_shift_amount(clock_rate) - 1;
-// 	sprintf(export_print_buffer(), "Divider value is: %i!\r\n", divider_value);
-// 	uart_transmit_string(UART1, export_print_buffer(), 0);
-	uint8_t divider_value = 0b110;
+	//   For a "shift amount" of 1, we need to use a value of 0b001 for SPR[1],SPR[0],SPI2X. We desire a divider_value of 0 in this case, as the least significant bit will be flipped when we put it in SPI2X
+	uint8_t shift_amount = get_divider_shift_amount(clock_rate);
+	uint8_t divider_value;
+	if (shift_amount == 7) { // if SPI2X needs to be enabled, then the divider_value needs to have 1 subtracted
+		divider_value = 7; // 128 special case
+	} else {
+		divider_value = shift_amount - 1;
+	}
+	sprintf(export_print_buffer(), "Divider value is: %i!\r\n", divider_value);
+	uart_transmit_string(UART1, export_print_buffer(), 0);
+	//uint8_t divider_value = 0b101;
 	// temporary change of !=
-	if ((divider_value & (1 << 2)) == 0) { // if bit 2 of divider_value is 0, then we need to enable SPI2X to get a smaller divider
+	if ((divider_value & 1) == 0) { // if least significant bit of divider_value is 0, then we need to enable SPI2X to get a smaller divider
 		addr->STATUS |= (1 << SPI2X);
 	} else {
 		addr->STATUS &= ~(1 << SPI2X);
 	}
-	addr->CONTROL = (1 << SPE) | SPI_MSB_FIRST | (1 << MSTR) | (CLOCK_POLARITY_BIT << CPOL) | (CLOCK_PHASE_BIT << CPHA) | (divider_value & 0b11);
+	addr->CONTROL = (1 << SPE) | SPI_MSB_FIRST | (1 << MSTR) | (CLOCK_POLARITY_BIT << CPOL) | (CLOCK_PHASE_BIT << CPHA) | (divider_value >> 1);
 }
 
 uint8_t spi_transfer(volatile SPI_t *addr, uint8_t send_val, uint8_t *rcv_val) {
