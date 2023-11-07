@@ -104,6 +104,8 @@ uint8_t spi_master_init(volatile SPI_t *addr, uint32_t clock_rate) {
 		addr->STATUS &= ~(1 << SPI2X);
 	}
 	addr->CONTROL = (1 << SPE) | SPI_MSB_FIRST | (1 << MSTR) | (CLOCK_POLARITY_BIT << CPOL) | (CLOCK_PHASE_BIT << CPHA) | (divider_value >> 1);
+	
+	return 0;
 }
 
 uint8_t spi_transfer(volatile SPI_t *addr, uint8_t send_val, uint8_t *rcv_val) {
