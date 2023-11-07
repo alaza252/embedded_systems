@@ -123,4 +123,22 @@ typedef struct SPI
 
 // endregion SPI
 
+
+// region TWI
+
+typedef struct TWI
+{
+	volatile uint8_t BAUD_RATE; // TWBR
+	volatile uint8_t STATUS; // TWSR
+	volatile uint8_t ADDR; // TWAR
+	volatile uint8_t DATA; // TWDR
+	volatile uint8_t CONTROL; // TWCR
+	volatile uint8_t ADDR_MASK; // TWAMR
+} TWI_t;
+
+#define TWI0 ((volatile TWI_t *) &TWBR0)
+#define TWI1 ((volatile TWI_t *) &TWBR1)
+
+// endregion TWI
+
 #endif
