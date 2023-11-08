@@ -11,6 +11,9 @@
 #include "board.h"
 
 #define TWI_INIT_INVALID_FREQ 1
+#define TWI_INVALID_DEV_ADDR 2
+#define TWI_UNEXPECTED_STATUS 3
+
 
 uint8_t twi_master_init(volatile TWI_t* addr, uint32_t i2c_freq);
 

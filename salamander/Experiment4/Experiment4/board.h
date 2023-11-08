@@ -141,4 +141,28 @@ typedef struct TWI
 
 // endregion TWI
 
+
+// region STA013
+
+#define STA013_TWI (TWI1)
+
+#define STA013_RESET_REG (PB)
+#define STA013_RESET_PIN_MASK (1 << 1)
+
+// SDA for TWI1
+#define STA013_SDA_REG (PE)
+#define STA013_SDA_PIN_MASK (1 << 5)
+
+// SCL for TWI1
+#define STA013_SCL_REG (PE)
+#define STA013_SCL_PIN_MASK (1 << 6)
+
+#define STA013_DATA_REQ_REG (PC)
+#define STA013_DATA_REQ_PIN_MASK (1 << 6)
+
+#define STA013_BIT_EN_REG (PD)
+#define STA013_BIT_EN_PIN_MASK (1 << 6)
+
+// endregion STA013
+
 #endif
