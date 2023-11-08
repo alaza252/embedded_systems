@@ -24,7 +24,7 @@ uint8_t twi_master_init(volatile TWI_t* addr, uint32_t i2c_freq) {
 		prescale_code = 3;
 		prescale = 64;
 	} else {
-		return INVALID_FREQ;
+		return TWI_INIT_INVALID_FREQ;
 	}
 	
 	uint8_t baud_val = (((F_CPU / OSC_DIV) / i2c_freq) - 16) / (2UL * prescale);
@@ -35,7 +35,14 @@ uint8_t twi_master_init(volatile TWI_t* addr, uint32_t i2c_freq) {
 	return 0;
 }
 
-uint8_t twi_master_receive(volatile uint8_t * addr, uint8_t dev_addr, uint16_t num_bytes, uint8_t *arr) {
-	return 0;
+
+uint8_t twi_master_receive(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num_bytes, uint8_t *arr) {
+
+	return 0
+}
+
+uint8_t twi_master_transmit(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num_bytes, uint8_t *arr) {
+
+	return 0
 }
 
