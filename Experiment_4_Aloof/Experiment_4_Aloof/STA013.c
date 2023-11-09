@@ -29,14 +29,29 @@ uint8_t sta013_init()
 	
 	
 	uint8_t err;
-	//timeout variable
-	uint8_t i = 0;
+	
+	
+	uint8_t i=0;
+// 	i = 0;
+// 	do
+// 	{
+//  		err = TWI_master_transmit(STA013_TWI,0x43,0x01,1,0, arr);
+// 	 	i++;
+// 		if (err != 0 && i < 10) {
+// 			 // If there's an error and we haven't reached the maximum retries, wait for a delay before the next attempt.
+// 		_delay_ms(10);}
+// 	} while (err!=0 && i<10);
+	
 	do {
 		err = twi_master_receive(STA013_TWI, 0x43, 3, arr);
 		i++;
+		if (err != 0 && i < 10) {
+        // If there's an error and we haven't reached the maximum retries, wait for a delay before the next attempt.
+        _delay_ms(10);}
 	} while(i < 10 && err != 0);
 	sprintf(export_print_buffer(), "Received Value: %i!\r\n", arr[2]);
 	UART_transmit_string(UART1, export_print_buffer(), 0);
+	
 		
 	
 	return 0;	
