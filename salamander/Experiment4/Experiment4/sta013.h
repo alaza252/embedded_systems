@@ -11,6 +11,10 @@
 
 #include "board.h"
 
+/** Indicates an internal TWI error. If a future implementation uses something besides TWI/I2C, this error code may be used to indicate that internal error as well*/
+#define STA013_INIT_TWI_ERROR 1
+/** Indicates one of the internal checks has failed during initialization */
+#define STA013_INIT_CHECK_FAILED_ERROR 2
 
 uint8_t sta013_init();
 

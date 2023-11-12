@@ -42,6 +42,14 @@ void twint_wait(volatile TWI_t* addr) {
 		// do nothing
 	}
 }
+void send_stop(volatile TWI_t* addr) {
+	addr -> CONTROL = ((1 << TWINT) | (1 << TWSTO) | (1 << TWEN));
+
+	// wait for TWSTO to be 0
+	while (((addr -> CONTROL) & (1 << TWSTO)) != 0) {
+		// do nothing
+	}
+}
 
 
 uint8_t twi_master_start(volatile TWI_t* addr, uint8_t dev_addr) {
@@ -56,6 +64,7 @@ uint8_t twi_master_start(volatile TWI_t* addr, uint8_t dev_addr) {
 	uint8_t status = (addr -> STATUS) & 0xF8;
 	
 	if ((status != 0x08) && (status != 0x10)) { // if the status is not a start sent and the status is not a repeated start
+		send_stop();
 		return TWI_UNEXPECTED_STATUS;
 	}
 	
@@ -78,6 +87,7 @@ uint8_t twi_master_receive(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num_
 	status = (addr -> STATUS) & 0xF8;
 	
 	if (status != 0x40) { // if the status is not a SLA+R sent, ACK received
+		send_stop();
 		return TWI_UNEXPECTED_STATUS;
 	}
 	
@@ -91,23 +101,20 @@ uint8_t twi_master_receive(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num_
 		} else {
 			addr -> CONTROL = ((1 << TWINT) | (1 << TWEA) | (1 << TWEN)); // send ACK, more bytes to send
 		}
-		
+
 		twint_wait(addr);
 		status = (addr -> STATUS) & 0xF8;
 		
 		if (status == 0x50 || status == 0x58) { // we have received a byte, and we have either sent an ACK or a NACK
 			arr[index] = addr -> DATA;
 		} else {
+			send_stop();
 			return TWI_UNEXPECTED_STATUS;
 		}
 		if (status == 0x58) { // we have received a byte and have sent a NACK
 			// If we have sent a NACK, then we assume that bytes_left is 1, and after this iteration we have no more bytes to send
 			// So... We need to now send a stop and wait for that stop to be fully transmitted
-			addr -> CONTROL = ((1 << TWINT) | (1 << TWSTO) | (1 << TWEN));
-			// wait for TWSTO to be 0
-			while (((addr -> CONTROL) & (1 << TWSTO)) == 1) {
-				// do nothing
-			}
+			send_stop()
 		}
 
 		bytes_left--;
@@ -133,40 +140,32 @@ uint8_t twi_master_transmit(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num
 
 	// 0x18 is shown in "TWI Master Transmit Status Codes"
 	if (status != 0x18) { // if the status is not a SLA+W sent, ACK received
+		send_stop();
+		if (status == 0x20) { // SLA+W sent, NACK received
+			return TWI_WRITE_NACK_RECEIVED;
+		}
 		return TWI_UNEXPECTED_STATUS;
 	}
 
-	uint16_t bytes_left = num_bytes;
-
 	uint16_t index = 0;
 
-	while (bytes_left > 0) {
-		// TODO this while loop is copied from the receive function. Most of the code here needs to change.
-		if (bytes_left == 1) {
-			addr -> CONTROL = ((1 << TWINT) | (0 << TWEA) | (1 << TWEN)); // send NACK, no more bytes to send
-		} else {
-			addr -> CONTROL = ((1 << TWINT) | (1 << TWEA) | (1 << TWEN)); // send ACK, more bytes to send
-		}
+	while (index < num_bytes) {
+		// Unlike in the notes, when we enter an iteration of the loop, we assume that we should send a byte.
+		//   As you can see below, we check the status register AFTER sending a byte
+		addr -> DATA = arr[index];
+		addr -> CONTROL = ((1 << TWINT) | (1 << TWEN));
 
 		twint_wait(addr);
 		status = (addr -> STATUS) & 0xF8;
 
-		if (status == 0x50 || status == 0x58) { // we have received a byte, and we have either sent an ACK or a NACK
-			arr[index] = addr -> DATA;
-		} else {
+		if (status != 0x28) { // 0x28 is the "data sent, ACK received" case (the "good" case), so we we don't get that, we need to check to see what we got
+			send_stop();
+			if (status == 0x30) { // this is the "data sent, NACK received" case
+				return TWI_WRITE_NACK_RECEIVED;
+			}
 			return TWI_UNEXPECTED_STATUS;
 		}
-		if (status == 0x58) { // we have received a byte and have sent a NACK
-			// If we have sent a NACK, then we assume that bytes_left is 1, and after this iteration we have no more bytes to send
-			// So... We need to now send a stop and wait for that stop to be fully transmitted
-			addr -> CONTROL = ((1 << TWINT) | (1 << TWSTO) | (1 << TWEN));
-			// wait for TWSTO to be 0
-			while (((addr -> CONTROL) & (1 << TWSTO)) == 1) {
-				// do nothing
-			}
-		}
 
-		bytes_left--;
 		index++;
 	}
 

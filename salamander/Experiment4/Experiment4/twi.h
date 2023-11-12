@@ -13,6 +13,8 @@
 #define TWI_INIT_INVALID_FREQ 1
 #define TWI_INVALID_DEV_ADDR 2
 #define TWI_UNEXPECTED_STATUS 3
+/** May be returned during twi_master_transmit to indicate the slack sent a NACK */
+#define TWI_WRITE_NACK_RECEIVED 4
 
 
 uint8_t twi_master_init(volatile TWI_t* addr, uint32_t i2c_freq);
