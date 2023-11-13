@@ -15,6 +15,21 @@
 
 #define STA013_TWI_DEVICE_ADDRESS 0x43
 
+
+uint8_t sta013_write_array(uint8_t array[]) {
+	uint8_t ff_count = 0;
+
+	uint8_t index = 0;
+	while (1) {
+		uint8_t address = array[index * 2];
+		uint8_t address = array[index * 2];
+
+
+		index++;
+	}
+}
+
+
 uint8_t sta013_init() {
 	gpio_output_init(STA013_RESET_REG, STA013_RESET_PIN_MASK);
 	twi_master_init(STA013_TWI, 44100UL);
