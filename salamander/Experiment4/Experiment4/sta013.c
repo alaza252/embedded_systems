@@ -119,6 +119,31 @@ uint8_t sta013_init() {
 			return STA013_INIT_TWI_ERROR;
 		}
 	}
+	{ // step 7
+		// note that I believe CONFIG2 writes to PCMCONF (0x55), which does the I2S part of step 7
+		
+		uint8_t check_registers[] = {
+			0x54, 0x55, 0x06, 0x0B, 0x52, 0x51, 0x65, 0x64, 0x50, 0x61, 0x05,
+			0xff
+		};
+		uint8_t index = 0;
+		while (check_registers[index] != 0xff) {
+			uint8_t err;
+			uint8_t val;
+			err = twi_master_transmit(STA013_TWI, STA013_TWI_DEVICE_ADDRESS, 1, &check_registers[index]);
+			if (err != 0) {
+				return STA013_INIT_TWI_ERROR;
+			}
+			err = twi_master_receive(STA013_TWI, STA013_TWI_DEVICE_ADDRESS, 1, &val);
+			
+			if (err != 0) {
+				return STA013_INIT_TWI_ERROR;
+			}
+			sprintf(export_print_buffer(), "Register: %i has value: %i\r\n", check_registers[index], val);
+			uart_transmit_string(UART1, export_print_buffer(), 0);
+			index++;
+		}
+	}
 	
 	return 0;
 }
