@@ -10,23 +10,33 @@
 #include "twi.h"
 #include "uart.h"
 #include "uart_print.h"
+#include "config_arrays.h"
 #include <util/delay.h>
 
 
 #define STA013_TWI_DEVICE_ADDRESS 0x43
 
-
-uint8_t sta013_write_array(uint8_t array[]) {
+uint8_t sta013_write_array(const uint8_t *array) {
 	uint8_t ff_count = 0;
 
-	uint8_t index = 0;
-	while (1) {
-		uint8_t address = array[index * 2];
-		uint8_t address = array[index * 2];
-
+	uint16_t index = 0;
+	while (ff_count < 1) {
+		uint8_t address = pgm_read_byte(&array[index * 2]);
+		uint8_t val = pgm_read_byte(&array[index * 2 + 1]);
+		if (address == 0xFF && val == 0xFF) {
+			ff_count++;
+		} else {
+			uint8_t values[] = {address, val};
+			uint8_t err = twi_master_transmit(STA013_TWI, STA013_TWI_DEVICE_ADDRESS, 2, values);
+			if (err != 0) {
+				return err;
+			}
+		}
+		
 
 		index++;
 	}
+	return 0;
 }
 
 
@@ -39,6 +49,10 @@ uint8_t sta013_init() {
 	_delay_us(1); // delay for 1000 ns (at least 100 ns)
 	
 	sta013_reset_pin_set(1);
+	
+	
+	sprintf(export_print_buffer(), "We gon init bayybee\r\n");
+	uart_transmit_string(UART1, export_print_buffer(), 0);
 
 	{ // step 3 code - (not strictly necessary, but kept for grading)
 		uint8_t arr[3];
@@ -60,6 +74,8 @@ uint8_t sta013_init() {
 			return STA013_INIT_CHECK_FAILED_ERROR;
 		}
 	}
+	sprintf(export_print_buffer(), "Step 3 done\r\n");
+	uart_transmit_string(UART1, export_print_buffer(), 0);
 
 	{ // step 5 code
 		uint8_t err;
@@ -80,6 +96,28 @@ uint8_t sta013_init() {
 			return STA013_INIT_CHECK_FAILED_ERROR;
 		}
 
+	}
+	
+	
+	sprintf(export_print_buffer(), "On to step 6\r\n");
+	uart_transmit_string(UART1, export_print_buffer(), 0);
+	
+	{ // step 6 code
+		uint8_t err;
+		
+		err = sta013_write_array(CONFIG);
+		
+		if (err != 0) {
+			return STA013_INIT_TWI_ERROR;
+		}
+		
+		_delay_ms(50); // "a short pause"
+		
+		err = sta013_write_array(CONFIG2);
+		
+		if (err != 0) {
+			return STA013_INIT_TWI_ERROR;
+		}
 	}
 	
 	return 0;

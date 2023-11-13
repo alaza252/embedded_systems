@@ -29,7 +29,10 @@ int main(void)
 	//init LEDs
 	gpio_led_init(LED0_REG, LED0_PIN_MASK);
 
-	sta013_init();
+	uint8_t err = sta013_init();
+	
+	sprintf(export_print_buffer(), "Error: %i!\r\n", err);
+	uart_transmit_string(UART1, export_print_buffer(), 0);
 }
 
 

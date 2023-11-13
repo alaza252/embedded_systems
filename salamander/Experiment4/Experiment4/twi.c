@@ -64,7 +64,7 @@ uint8_t twi_master_start(volatile TWI_t* addr, uint8_t dev_addr) {
 	uint8_t status = (addr -> STATUS) & 0xF8;
 	
 	if ((status != 0x08) && (status != 0x10)) { // if the status is not a start sent and the status is not a repeated start
-		send_stop();
+		send_stop(addr);
 		return TWI_UNEXPECTED_STATUS;
 	}
 	
@@ -87,7 +87,7 @@ uint8_t twi_master_receive(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num_
 	status = (addr -> STATUS) & 0xF8;
 	
 	if (status != 0x40) { // if the status is not a SLA+R sent, ACK received
-		send_stop();
+		send_stop(addr);
 		return TWI_UNEXPECTED_STATUS;
 	}
 	
@@ -108,13 +108,13 @@ uint8_t twi_master_receive(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num_
 		if (status == 0x50 || status == 0x58) { // we have received a byte, and we have either sent an ACK or a NACK
 			arr[index] = addr -> DATA;
 		} else {
-			send_stop();
+			send_stop(addr);
 			return TWI_UNEXPECTED_STATUS;
 		}
 		if (status == 0x58) { // we have received a byte and have sent a NACK
 			// If we have sent a NACK, then we assume that bytes_left is 1, and after this iteration we have no more bytes to send
 			// So... We need to now send a stop and wait for that stop to be fully transmitted
-			send_stop()
+			send_stop(addr);
 		}
 
 		bytes_left--;
@@ -140,7 +140,7 @@ uint8_t twi_master_transmit(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num
 
 	// 0x18 is shown in "TWI Master Transmit Status Codes"
 	if (status != 0x18) { // if the status is not a SLA+W sent, ACK received
-		send_stop();
+		send_stop(addr);
 		if (status == 0x20) { // SLA+W sent, NACK received
 			return TWI_WRITE_NACK_RECEIVED;
 		}
@@ -159,7 +159,7 @@ uint8_t twi_master_transmit(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num
 		status = (addr -> STATUS) & 0xF8;
 
 		if (status != 0x28) { // 0x28 is the "data sent, ACK received" case (the "good" case), so we we don't get that, we need to check to see what we got
-			send_stop();
+			send_stop(addr);
 			if (status == 0x30) { // this is the "data sent, NACK received" case
 				return TWI_WRITE_NACK_RECEIVED;
 			}

@@ -1,6 +1,5 @@
 
-#include <avr/io.h>
-#include <avr/pgmspace.h>
+#include "config_arrays.h"
 
 const  uint8_t CONFIG[3998] PROGMEM = 
 {  58, 1,
