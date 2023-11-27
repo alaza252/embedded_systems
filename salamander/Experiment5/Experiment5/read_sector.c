@@ -13,7 +13,21 @@
 // Step 3
 uint8_t read_sector(uint32_t sect_num, uint16_t sect_size, uint8_t * data_arr) {
 	cs_pin_set(0);
-	// TODO
+
+	uint8_t error;
+
+	error = send_command(17, sect_num); // TODO can we just pass in sect_num as the block_num here?
+	if (error != 0) {
+		cs_pin_set(1);
+		return READ_SECTOR_COM_ERROR;
+	}
+
+	error = read_block(sect_size, data_arr);
+	if (error != 0) {
+		cs_pin_set(1);
+		return READ_SECTOR_COM_ERROR;
+	}
+
 	cs_pin_set(1);
 	return 0;
 }

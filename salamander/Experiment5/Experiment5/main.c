@@ -17,6 +17,7 @@
 #include "long_serial_in.h"
 #include "print_memory.h"
 #include "sta013.h"
+#include "read_sector.h"
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -61,25 +62,15 @@ int main(void)
 		uint32_t block_num = long_serial_input(UART1);
 		sprintf(export_print_buffer(), "Block number: %i!\r\n", (uint8_t) block_num); // this only supports showing 8 bit numbers, but that's OK. higher values are still supported, they just aren't printed correctly
 		uart_transmit_string(UART1, export_print_buffer(), 0);
-		uint8_t error;
-		
-		cs_pin_set(0);
-		error = send_command(17, block_num);
+
+		uint8_t data[512];
+		uint8_t error = read_sector(block_num, 512, data);
 		if (error != 0) {
-			sprintf(export_print_buffer(), "Got error when sending: %i!\r\n", error);
+			sprintf(export_print_buffer(), "Got error when reading: %i!\r\n", error);
 			uart_transmit_string(UART1, export_print_buffer(), 0);
 		} else {
-			uint8_t data[512];
-			error = read_block(512, data);
-			if (error != 0) {
-				sprintf(export_print_buffer(), "Got error when reading: %i!\r\n", error);
-				uart_transmit_string(UART1, export_print_buffer(), 0);
-			} else {
-				print_memory(data, 512);
-			}
+			print_memory(data, 512);
 		}
-		
-		cs_pin_set(1);
 	}
 	
 }

@@ -9,6 +9,7 @@
 #ifndef READ_SECTOR_H
 #define READ_SECTOR_H
 
+#define READ_SECTOR_COM_ERROR 1
 
 /**
  * (Step 3)
