@@ -2,40 +2,16 @@
 #include "board.h"
 #include "UART.h"
 #include "File_System_struct.h"
-#include "Directory_Functions_struct.h"
-#include "Read_Sector.h"
-#include "UART_Print.h"
+#include "directory_functions.h"
+#include "read_sector.h"
+#include "uart_print.h"
 
 /******* Private Constants *************/
 #define CR (0x0D)
 #define LF (0x0A) 
 
-FS_values_t Drive_values;
 
-/***********************************************************************
-DESC: Returns a pointer to the global structure Drive_values to export to other files
-INPUT: void
-RETURNS: Pointer to the structure Drive_values
-CAUTION: 
-************************************************************************/
-
-FS_values_t * export_drive_values(void)
-{
-   return &Drive_values;
-}
-
-
-/***********************************************************************
-DESC: Prints all short file name entries for a given directory 
-INPUT: Starting Sector of the directory and the pointer to a 
-block of memory in xdata that can be used to read blocks from the SD card
-RETURNS: uint16_t number of entries found in the directory
-CAUTION: Supports FAT16, SD_shift must be set before using this function
-************************************************************************/
-
-
-
-uint16_t  print_directory(uint32_t Sector_num, uint8_t * array_in)
+uint16_t  print_directory(FatInfo *fat_info, uint32_t Sector_num, uint8_t * array_in)
 { 
    uint32_t Sector, max_sectors;
    uint16_t i, entries;
@@ -48,16 +24,16 @@ uint16_t  print_directory(uint32_t Sector_num, uint8_t * array_in)
    values=array_in;
    entries=0;
    i=0;
-   if (Drive_values.FATtype==FAT16)  // included for FAT16 compatibility
+   if (fat_info->FATtype==FAT16)  // included for FAT16 compatibility
    { 
-      max_sectors=Drive_values.RootDirSecs;   // maximum sectors in a FAT16 root directory
+      max_sectors=fat_info->RootDirSecs;   // maximum sectors in a FAT16 root directory
    }
    else
    {
-      max_sectors=Drive_values.SecPerClus;
+      max_sectors= fat_info->SecPerClus;
    }
    Sector=Sector_num;
-   error_flag=read_sector(Sector,Drive_values.BytesPerSec,values);
+   error_flag=read_sector(Sector,fat_info->BytesPerSec,values);
    if(error_flag==no_errors)
    {
      do
@@ -105,7 +81,7 @@ uint16_t  print_directory(uint32_t Sector_num, uint8_t * array_in)
 			  Sector++;
               if((Sector-Sector_num)<max_sectors)
 			  {
-                 error_flag=read_sector(Sector,Drive_values.BytesPerSec,values);
+                 error_flag=read_sector(Sector,fat_info->BytesPerSec,values);
 			     if(error_flag!=no_errors)
 			     {
 			        entries=0;   // no entries found indicates disk read error
@@ -130,17 +106,7 @@ uint16_t  print_directory(uint32_t Sector_num, uint8_t * array_in)
  }
 
 
-/***********************************************************************
-DESC: Uses the same method as Print_Directory to locate short file names,
-      but locates a specified entry and returns and cluster  
-INPUT: Starting Sector of the directory, an entry number and a pointer to a 
-block of memory in xdata that can be used to read blocks from the SD card
-RETURNS: uint32_t with cluster in lower 28 bits.  Bit 28 set if this is 
-         a directory entry, clear for a file.  Bit 31 set for error.
-CAUTION: 
-************************************************************************/
-
-uint32_t read_dir_entry(uint32_t Sector_num, uint16_t Entry, uint8_t * array_in)
+uint32_t read_dir_entry(FatInfo *fat_info, uint32_t Sector_num, uint16_t Entry, uint8_t * array_in)
 { 
    uint32_t Sector, max_sectors, return_clus;
    uint16_t i, entries;
@@ -151,16 +117,16 @@ uint32_t read_dir_entry(uint32_t Sector_num, uint16_t Entry, uint8_t * array_in)
    entries=0;
    i=0;
    return_clus=0;
-   if (Drive_values.FATtype==FAT16)  // included for FAT16 compatibility
+   if (fat_info->FATtype==FAT16)  // included for FAT16 compatibility
    { 
-      max_sectors=Drive_values.RootDirSecs;   // maximum sectors in a FAT16 root directory
+      max_sectors=fat_info->RootDirSecs;   // maximum sectors in a FAT16 root directory
    }
    else
    {
-      max_sectors=Drive_values.SecPerClus;
+      max_sectors=fat_info->SecPerClus;
    }
    Sector=Sector_num;
-   error_flag=read_sector(Sector,Drive_values.BytesPerSec,values);
+   error_flag=read_sector(Sector,fat_info->BytesPerSec,values);
    if(error_flag==no_errors)
    {
      do
@@ -174,7 +140,7 @@ uint32_t read_dir_entry(uint32_t Sector_num, uint16_t Entry, uint8_t * array_in)
 		      entries++;
               if(entries==Entry)
               {
-			    if(Drive_values.FATtype==FAT32)
+			    if(fat_info->FATtype==FAT32)
                 {
                    return_clus=read_value_8(21+i,values);
 				   return_clus=return_clus<<8;
@@ -197,7 +163,7 @@ uint32_t read_dir_entry(uint32_t Sector_num, uint16_t Entry, uint8_t * array_in)
 			  Sector++;
 			  if((Sector-Sector_num)<max_sectors)
 			  {
-                 error_flag=read_sector(Sector,Drive_values.BytesPerSec,values);
+                 error_flag=read_sector(Sector,fat_info->BytesPerSec,values);
 			     if(error_flag!=no_errors)
 			     {
 			         return_clus=no_entry_found;

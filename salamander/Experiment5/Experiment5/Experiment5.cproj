@@ -148,10 +148,7 @@
     <Compile Include="config_arrays.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Directory_Functions_globals.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Directory_Functions_struct.c">
+    <Compile Include="directory_functions.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="io.c">
@@ -167,6 +164,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="print_memory.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="read_sector.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="sd.c">

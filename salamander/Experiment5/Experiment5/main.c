@@ -68,13 +68,13 @@ int main(void)
 		if (error != 0) {
 			sprintf(export_print_buffer(), "Got error when sending: %i!\r\n", error);
 			uart_transmit_string(UART1, export_print_buffer(), 0);
-			} else {
+		} else {
 			uint8_t data[512];
 			error = read_block(512, data);
 			if (error != 0) {
 				sprintf(export_print_buffer(), "Got error when reading: %i!\r\n", error);
 				uart_transmit_string(UART1, export_print_buffer(), 0);
-				} else {
+			} else {
 				print_memory(data, 512);
 			}
 		}
