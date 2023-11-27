@@ -8,7 +8,7 @@
 #include "mount_drive.h"
 
 // look at lecture 15b for these steps
-uint8_t mount_drive(void) { // or uint8_t mount_drive(uint8_t * arr)
+uint8_t mount_drive(FatInfo *fat_info, uint8_t buffer[]) { // or uint8_t mount_drive(uint8_t * arr)
 	return 0;
 }
 

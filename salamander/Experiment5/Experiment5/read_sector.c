@@ -16,6 +16,10 @@ uint8_t read_sector(uint32_t sect_num, uint16_t sect_size, uint8_t * data_arr) {
 
 	uint8_t error;
 
+	// NOTE: We are assuming that the block size (specified to the SD card) and the sector size (specific to the FAT format) are the same
+	//   This assumption is true when the SD card is >=v2 (block size is 512) and when this is a FAT32 formatted drive (sector size is 512).
+	//   That is the only reason that this code is able to be so simple.
+
 	error = send_command(17, sect_num); // TODO can we just pass in sect_num as the block_num here?
 	if (error != 0) {
 		cs_pin_set(1);
