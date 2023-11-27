@@ -148,6 +148,12 @@
     <Compile Include="config_arrays.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Directory_Functions_globals.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Directory_Functions_struct.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="io.c">
       <SubType>compile</SubType>
     </Compile>
