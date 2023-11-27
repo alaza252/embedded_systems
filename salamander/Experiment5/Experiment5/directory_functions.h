@@ -28,7 +28,7 @@ typedef struct
   uint32_t FirstDataSec;
   uint32_t StartofFAT;
   uint32_t RootDirSecs;
-} FATInfo; // FS_values_t
+} FatInfo; // FS_values_t
 
 // ------ Public function prototypes -------------------------------
 /***********************************************************************

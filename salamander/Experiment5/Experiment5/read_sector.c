@@ -1,5 +1,5 @@
 /*
- * Read_Sector.c
+ * read_sector.c
  *
  * Created: 11/26/2023 2:52:51 PM
  * Author : Sam Stockmann, Lavender Shannon
@@ -20,7 +20,7 @@ uint8_t read_sector(uint32_t sect_num, uint16_t sect_size, uint8_t * data_arr) {
 	//   This assumption is true when the SD card is >=v2 (block size is 512) and when this is a FAT32 formatted drive (sector size is 512).
 	//   That is the only reason that this code is able to be so simple.
 
-	error = send_command(17, sect_num); // TODO can we just pass in sect_num as the block_num here?
+	error = send_command(17, sect_num); // sect_num being passed as block_num (see above for explanation)
 	if (error != 0) {
 		cs_pin_set(1);
 		return READ_SECTOR_COM_ERROR;
