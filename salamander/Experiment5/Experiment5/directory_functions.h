@@ -1,6 +1,7 @@
 #ifndef _Directory_Func_H
 #define _Directory_Func_H
 
+#include "board.h"
 
 
 //------- Public Constants  -----------------------------------------
@@ -17,7 +18,7 @@
 
 
 //----------------- Typedefs ----------------------------------------
-typedef struct
+typedef struct FatInfo
 {
   uint8_t SecPerClus;
   uint8_t FATtype;

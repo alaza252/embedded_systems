@@ -45,7 +45,7 @@ uint8_t read_val_8(uint16_t offset, uint8_t arr[]) {
 
 uint16_t read_val_16(uint16_t offset, uint8_t arr[]) {
 	uint16_t r = 0;
-	for (uint16_t i = offset; i < offset + 2; i++) {
+	for (uint16_t i = offset + 1; i >= offset; i--) {
 		r <<= 8;
 		r |= arr[i];
 	}
@@ -54,7 +54,7 @@ uint16_t read_val_16(uint16_t offset, uint8_t arr[]) {
 
 uint32_t read_val_32(uint16_t offset, uint8_t arr[]) {
 	uint32_t r = 0;
-	for (uint16_t i = offset; i < offset + 4; i++) {
+	for (uint16_t i = offset + 3; i >= offset; i--) {
 		r <<= 8;
 		r |= arr[i];
 	}

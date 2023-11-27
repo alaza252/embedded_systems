@@ -8,8 +8,15 @@
 #ifndef MOUNT_DRIVE_H
 #define MOUNT_DRIVE_H
 
+#include "directory_functions.h"
+
 /** We define the sector size as a constant because we only support FAT32. This value may also be used to assume the  */
 #define FAT_SECTOR_SIZE 512
+
+#define MOUNT_DRIVE_BPB_NOT_FOUND 1
+#define MOUNT_DRIVE_FAT_16_NOT_SUPPORTED 16
+#define MOUNT_DRIVE_UNEXPECTED_FAT12_VAL 12
+#define MOUNT_DRIVE_UNEXPECTED_FAT16_VAL 161U
 
 /**
  * (Step 5)
@@ -26,7 +33,7 @@
  *
  * Returns: An error code. 0 represents success. A non-zero error represents some error, defined in this file.
  */
-uint8_t mount_drive(FatInfo *fat_info, uint8_t buffer[]); // or uint8_t mount_drive(uint8_t * arr);
+uint8_t mount_drive(FatInfo *fat_info, uint8_t buffer[]);
 
 
 /**

@@ -17,7 +17,9 @@
 #include "long_serial_in.h"
 #include "print_memory.h"
 #include "sta013.h"
+#include "directory_functions.h"
 #include "read_sector.h"
+#include "mount_drive.h"
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -57,14 +59,25 @@ int main(void)
 	
 	//spi_master_init(SPI0, 25000000UL);
 	spi_master_init(SPI0, 8000000UL); // 8MHz is the maximum of our board, if we try to use a value higher than this, the function that calculates the divider will get very angry
+
+	FatInfo fat_info;
+	uint8_t data[512];
+	uint8_t error;
+	
+	//mount_drive(&fat_info, data);
+	error = mount_drive(&fat_info, data);
+	
+	if (error != 0) {
+		sprintf(export_print_buffer(), "Error while mounting drive: %i!\r\n", error);
+		uart_transmit_string(UART1, export_print_buffer(), 0);
+	}
 	
 	for (;;) {
 		uint32_t block_num = long_serial_input(UART1);
 		sprintf(export_print_buffer(), "Block number: %i!\r\n", (uint8_t) block_num); // this only supports showing 8 bit numbers, but that's OK. higher values are still supported, they just aren't printed correctly
 		uart_transmit_string(UART1, export_print_buffer(), 0);
 
-		uint8_t data[512];
-		uint8_t error = read_sector(block_num, 512, data);
+		error = read_sector(block_num, 512, data);
 		if (error != 0) {
 			sprintf(export_print_buffer(), "Got error when reading: %i!\r\n", error);
 			uart_transmit_string(UART1, export_print_buffer(), 0);
