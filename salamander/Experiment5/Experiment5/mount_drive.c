@@ -15,16 +15,17 @@
 uint8_t mount_drive(FatInfo *fat_info, uint8_t buffer[]) {
 	read_sector(0, FAT_SECTOR_SIZE, buffer);
 	
+	uint32_t mbr_relative_sects; // this is the sector number of the BPB
+	
 	if (read_val_8(0, buffer) != 0xEB && read_val_8(0, buffer) != 0xE9) { // this is the MBR
-		uint32_t bpb_sect_num = read_val_32(0x01C6, buffer);
-		
-		sprintf(export_print_buffer(), "bpb_sect_num : %lu!\r\n", bpb_sect_num);
-		uart_transmit_string(UART1, export_print_buffer(), 0);
-		read_sector(bpb_sect_num, FAT_SECTOR_SIZE, buffer);
+		mbr_relative_sects = read_val_32(0x01C6, buffer); // this represents the sector number of the BPB
+		read_sector(mbr_relative_sects, FAT_SECTOR_SIZE, buffer); // so, this reads the BPB into buffer
 		
 		if (read_val_8(0, buffer) != 0xEB && read_val_8(0, buffer) != 0xE9) { 
 			return MOUNT_DRIVE_BPB_NOT_FOUND;
 		}
+	} else {
+		mbr_relative_sects = 0;
 	}
 	
 	// buffer contains BPB at this point
@@ -34,6 +35,12 @@ uint8_t mount_drive(FatInfo *fat_info, uint8_t buffer[]) {
 	if (fat_size_16 != 0) {
 		return MOUNT_DRIVE_FAT_16_NOT_SUPPORTED;
 	}
+	
+	fat_info -> FATtype = FAT32;
+
+	// TODO
+// 	fat_info -> BytesPerSecShift = FAT32_shift;
+// 	fat_info -> FATshift = FAT32_shift;
 	
 	uint32_t fat_size = read_val_32(0x0024, buffer); // read from BPB_FATSz32 b/c we only support FAT32
 	
@@ -68,20 +75,46 @@ uint8_t mount_drive(FatInfo *fat_info, uint8_t buffer[]) {
 		return MOUNT_DRIVE_UNEXPECTED_FAT16_VAL;
 	} // else vol is FAT32
 	
-	sprintf(export_print_buffer(), "Cluster count is : %lu!\r\n", clust_count);
-	uart_transmit_string(UART1, export_print_buffer(), 0);
-	
 	// Step 4 lecture 15b
 	
+	fat_info -> StartofFAT = reserved_sect_count + mbr_relative_sects;
 	
+	// Step 5 lecture 15b
+	
+	fat_info -> FirstDataSec = reserved_sect_count + (num_fats * fat_size) + (fat_info -> RootDirSecs) + mbr_relative_sects;
+	
+	// Step 6 lecture 15b
+	
+	uint32_t root_clust = read_val_32(0x002C, buffer);
+	
+	fat_info -> FirstRootDirSec = ((root_clust - 2) * sects_per_clust) + (fat_info -> FirstDataSec);
+	
+// 	sprintf(export_print_buffer(), "SectsPerClust is : %i!\r\n", sects_per_clust);
+// 	uart_transmit_string(UART1, export_print_buffer(), 0);
 	
 	return 0;
 }
 
-uint32_t first_sect(uint32_t clust_num) {
-	return 0;
+uint32_t first_sect(FatInfo *fat_info, uint32_t clust_num) {
+	if (clust_num == 0) {
+		return fat_info -> FirstRootDirSec;
+	}
+	
+	return (((clust_num - 2) * (fat_info -> SecPerClus)) + (fat_info -> FirstDataSec));
 }
 
-uint32_t find_next_clust(uint32_t clust_num, uint8_t arr[]) {
-	return 0;
+uint32_t find_next_clust(FatInfo *fat_info, uint32_t clust_num, uint8_t arr[]) {
+	uint32_t fat_offset = clust_num * 4; // multiply by 4 is specific to FAT32
+	
+	uint32_t cur_clust_sect_num = (fat_info -> StartofFAT) + (fat_offset / (fat_info -> BytesPerSec));
+	uint8_t error = read_sector(cur_clust_sect_num, FAT_SECTOR_SIZE, arr);
+	if (error != 0) {
+		// TODO
+		return 0; // TODO
+	}
+	// uint32_t entry_offset = fat_offset % fat_info -> BytesPerSec; // TODO what is this even for?
+	
+	uint32_t next_cluster = read_val_32(fat_offset, arr) & 0x0FFFFFFF;
+	
+	return next_cluster;
 }

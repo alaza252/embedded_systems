@@ -40,7 +40,7 @@ uint8_t mount_drive(FatInfo *fat_info, uint8_t buffer[]);
  * (Step 6)
  * Calculates the starting sector of a cluster
  */
-uint32_t first_sect(uint32_t clust_num);
+uint32_t first_sect(FatInfo *fat_info, uint32_t clust_num);
 
 
 /**
@@ -48,6 +48,6 @@ uint32_t first_sect(uint32_t clust_num);
  *
  *
  */
-uint32_t find_next_clust(uint32_t clust_num, uint8_t arr[]);
+uint32_t find_next_clust(FatInfo *fat_info, uint32_t clust_num, uint8_t arr[]);
 
 #endif
