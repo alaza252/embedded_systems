@@ -20,6 +20,7 @@
 #include "directory_functions.h"
 #include "read_sector.h"
 #include "mount_drive.h"
+#include "print_file.h"
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
@@ -72,23 +73,37 @@ int main(void)
 		uart_transmit_string(UART1, export_print_buffer(), 0);
 	}
 	
+// 	
+// 	sprintf(export_print_buffer(), "Some values BytesPerSec: %i   SecPerClus: %i   StartofFAT: %lu\r\n", fat_info.BytesPerSec, fat_info.SecPerClus, fat_info.StartofFAT);
+// 	uart_transmit_string(UART1, export_print_buffer(), 0);
 	
-	sprintf(export_print_buffer(), "Some values BytesPerSec: %i   SecPerClus: %i   StartofFAT: %lu\r\n", fat_info.BytesPerSec, fat_info.SecPerClus, fat_info.StartofFAT);
-	uart_transmit_string(UART1, export_print_buffer(), 0);
 	
-	print_directory(&fat_info, fat_info.FirstRootDirSec, data);
+	uint32_t current_working_directory_sector_num = fat_info.FirstRootDirSec;
 	
 	for (;;) {
-		uint32_t block_num = long_serial_input(UART1);
-		sprintf(export_print_buffer(), "Block number: %i!\r\n", (uint8_t) block_num); // this only supports showing 8 bit numbers, but that's OK. higher values are still supported, they just aren't printed correctly
-		uart_transmit_string(UART1, export_print_buffer(), 0);
-
-		error = read_sector(block_num, 512, data);
-		if (error != 0) {
-			sprintf(export_print_buffer(), "Got error when reading: %i!\r\n", error);
+		uint16_t number_of_entries = print_directory(&fat_info, current_working_directory_sector_num, data);
+		uint16_t entry_number = (uint16_t) long_serial_input(UART1); // case to 16 bit because no one should give us a huge value (right?)
+		if (entry_number > number_of_entries) {
+			sprintf(export_print_buffer(), "Hey! entry number: %i is too big!!\r\n", entry_number);
 			uart_transmit_string(UART1, export_print_buffer(), 0);
 		} else {
-			print_memory(data, 512);
+			uint32_t entry_cluster_value = read_dir_entry(&fat_info, current_working_directory_sector_num, entry_number, data);
+			uint32_t entry_cluster = entry_cluster_value & 0x0FFFFFFF;
+			uint32_t is_error = entry_cluster_value & 0x80000000;
+			uint32_t is_directory = entry_cluster_value & 0x10000000;
+			if (is_error != 0) {
+				sprintf(export_print_buffer(), "Error occurred!\r\n");
+				uart_transmit_string(UART1, export_print_buffer(), 0);
+			} else if (is_directory != 0) {
+				sprintf(export_print_buffer(), "Changing working directory!\r\n");
+				uart_transmit_string(UART1, export_print_buffer(), 0);
+				current_working_directory_sector_num = first_sect(&fat_info, entry_cluster);
+			} else {
+				// it is a file
+				sprintf(export_print_buffer(), "You selected a file!\r\n");
+				uart_transmit_string(UART1, export_print_buffer(), 0);
+				print_file(&fat_info, entry_cluster, data);
+			}
 		}
 	}
 	

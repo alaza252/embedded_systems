@@ -10,10 +10,6 @@
 #include "sd_spi.h"
 #include "spi.h"
 
-// includes for debugging
-#include "uart.h"
-#include "uart_print.h"
-#include <stdio.h>
 
 // Step 3
 uint8_t read_sector(uint32_t sect_num, uint16_t sect_size, uint8_t * data_arr) {
