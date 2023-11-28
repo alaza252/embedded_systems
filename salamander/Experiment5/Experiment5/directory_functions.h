@@ -22,8 +22,7 @@ typedef struct FatInfo
 {
   uint8_t SecPerClus;
   uint8_t FATtype;
-  uint8_t BytesPerSecShift;
-  uint8_t FATshift;
+  // removed shift stuff because I don't care about efficiency
   uint16_t BytesPerSec;
   uint32_t FirstRootDirSec;
   uint32_t FirstDataSec;

@@ -18,6 +18,8 @@
 #define MOUNT_DRIVE_UNEXPECTED_FAT12_VAL 12
 #define MOUNT_DRIVE_UNEXPECTED_FAT16_VAL 161U
 
+#define FIND_NEXT_CLUST_READ_ERROR 1
+
 /**
  * (Step 5)
  *
@@ -48,6 +50,6 @@ uint32_t first_sect(FatInfo *fat_info, uint32_t clust_num);
  *
  *
  */
-uint32_t find_next_clust(FatInfo *fat_info, uint32_t clust_num, uint8_t arr[]);
+uint8_t find_next_clust(FatInfo *fat_info, uint32_t clust_num, uint8_t arr[], uint32_t *next_cluster_out);
 
 #endif

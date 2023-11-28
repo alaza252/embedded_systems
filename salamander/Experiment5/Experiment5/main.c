@@ -50,7 +50,7 @@ int main(void)
 	uint8_t sd_card_init_error = sd_card_init(&sd_info);
 	
 	if (sd_card_init_error != 0) {
-		sprintf(export_print_buffer(), "Error was: %i!\r\n", sd_card_init_error);
+		sprintf(export_print_buffer(), "SD Card Init Error was: %i!\r\n", sd_card_init_error);
 		uart_transmit_string(UART1, export_print_buffer(), 0);
 		return 0;
 	}
@@ -71,6 +71,12 @@ int main(void)
 		sprintf(export_print_buffer(), "Error while mounting drive: %i!\r\n", error);
 		uart_transmit_string(UART1, export_print_buffer(), 0);
 	}
+	
+	
+	sprintf(export_print_buffer(), "Some values BytesPerSec: %i   SecPerClus: %i   StartofFAT: %lu\r\n", fat_info.BytesPerSec, fat_info.SecPerClus, fat_info.StartofFAT);
+	uart_transmit_string(UART1, export_print_buffer(), 0);
+	
+	print_directory(&fat_info, fat_info.FirstRootDirSec, data);
 	
 	for (;;) {
 		uint32_t block_num = long_serial_input(UART1);

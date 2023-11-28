@@ -38,9 +38,8 @@ uint8_t mount_drive(FatInfo *fat_info, uint8_t buffer[]) {
 	
 	fat_info -> FATtype = FAT32;
 
-	// TODO
-// 	fat_info -> BytesPerSecShift = FAT32_shift;
-// 	fat_info -> FATshift = FAT32_shift;
+	fat_info -> BytesPerSec = read_val_16(0x000B, buffer);
+	fat_info -> SecPerClus = read_val_8(0x000D, buffer);
 	
 	uint32_t fat_size = read_val_32(0x0024, buffer); // read from BPB_FATSz32 b/c we only support FAT32
 	
@@ -103,18 +102,17 @@ uint32_t first_sect(FatInfo *fat_info, uint32_t clust_num) {
 	return (((clust_num - 2) * (fat_info -> SecPerClus)) + (fat_info -> FirstDataSec));
 }
 
-uint32_t find_next_clust(FatInfo *fat_info, uint32_t clust_num, uint8_t arr[]) {
+uint8_t find_next_clust(FatInfo *fat_info, uint32_t clust_num, uint8_t arr[], uint32_t *next_cluster_out) {
 	uint32_t fat_offset = clust_num * 4; // multiply by 4 is specific to FAT32
 	
 	uint32_t cur_clust_sect_num = (fat_info -> StartofFAT) + (fat_offset / (fat_info -> BytesPerSec));
 	uint8_t error = read_sector(cur_clust_sect_num, FAT_SECTOR_SIZE, arr);
 	if (error != 0) {
-		// TODO
-		return 0; // TODO
+		return FIND_NEXT_CLUST_READ_ERROR;
 	}
-	// uint32_t entry_offset = fat_offset % fat_info -> BytesPerSec; // TODO what is this even for?
+	uint32_t entry_offset = fat_offset % fat_info -> BytesPerSec; // TODO what is this even for?
 	
-	uint32_t next_cluster = read_val_32(fat_offset, arr) & 0x0FFFFFFF;
+	(*next_cluster_out) = read_val_32(entry_offset, arr) & 0x0FFFFFFF;
 	
-	return next_cluster;
+	return 0;
 }

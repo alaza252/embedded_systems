@@ -38,40 +38,40 @@ uint16_t  print_directory(FatInfo *fat_info, uint32_t Sector_num, uint8_t * arra
    {
      do
      {
-        temp8=read_value_8(0+i,values);  // read first byte to see if empty
+        temp8=read_val_8(0+i,values);  // read first byte to see if empty
         if((temp8!=0xE5)&&(temp8!=0x00))
 	    {  
-	       attr=read_value_8(0x0b+i,values);
+	       attr=read_val_8(0x0b+i,values);
 		   if((attr&0x0E)==0)   // if hidden, system or Vol_ID bit is set do not print
 		   {
 		      entries++;
 			  sprintf(prnt_bffr,"%5d. ",entries);  // print entry number with a fixed width specifier
-		      UART_transmit_string(UART1,prnt_bffr,0);
+		      uart_transmit_string(UART1,prnt_bffr,0);
 			  for(j=0;j<8;j++)
 			  {
-			     out_val=read_value_8(i+j,values);   // print the 8 byte name
-			     UART_transmit(UART1,out_val);
+			     out_val=read_val_8(i+j,values);   // print the 8 byte name
+			     uart_transmit(UART1,out_val);
 			  }
               if((attr&0x10)==0x10)  // indicates directory
 			  {
 			     for(j=8;j<11;j++)
 			     {
-			        out_val=read_value_8(i+j,values);
-			        UART_transmit(UART1,out_val);
+			        out_val=read_val_8(i+j,values);
+			        uart_transmit(UART1,out_val);
 			     }
 			     sprintf(prnt_bffr,"[DIR]\r\n");
-				 UART_transmit_string(UART1,prnt_bffr,0);
+				 uart_transmit_string(UART1,prnt_bffr,0);
 			  }
 			  else       // print a period and the three byte extension for a file
 			  {
-			     UART_transmit(UART1,0x2E);       
+			     uart_transmit(UART1,0x2E);       
 			     for(j=8;j<11;j++)
 			     {
-			        out_val=read_value_8(i+j,values);
-			        UART_transmit(UART1,out_val);
+			        out_val=read_val_8(i+j,values);
+			        uart_transmit(UART1,out_val);
 			     }
-			     UART_transmit(UART1,CR);
-                 UART_transmit(UART1,LF);
+			     uart_transmit(UART1,CR);
+                 uart_transmit(UART1,LF);
 			  }
 		    }
 		}
@@ -131,10 +131,10 @@ uint32_t read_dir_entry(FatInfo *fat_info, uint32_t Sector_num, uint16_t Entry, 
    {
      do
      {
-        temp8=read_value_8(0+i,values);  // read first byte to see if empty
+        temp8=read_val_8(0+i,values);  // read first byte to see if empty
         if((temp8!=0xE5)&&(temp8!=0x00))
 	    {  
-	       attr=read_value_8(0x0b+i,values);
+	       attr=read_val_8(0x0b+i,values);
 		   if((attr&0x0E)==0)    // if hidden do not print
 		   {
 		      entries++;
@@ -142,15 +142,15 @@ uint32_t read_dir_entry(FatInfo *fat_info, uint32_t Sector_num, uint16_t Entry, 
               {
 			    if(fat_info->FATtype==FAT32)
                 {
-                   return_clus=read_value_8(21+i,values);
+                   return_clus=read_val_8(21+i,values);
 				   return_clus=return_clus<<8;
-                   return_clus|=read_value_8(20+i,values);
+                   return_clus|=read_val_8(20+i,values);
                    return_clus=return_clus<<8;
                 }
-                return_clus|=read_value_8(27+i,values);
+                return_clus|=read_val_8(27+i,values);
 			    return_clus=return_clus<<8;
-                return_clus|=read_value_8(26+i,values);
-			    attr=read_value_8(0x0b+i,values);
+                return_clus|=read_val_8(26+i,values);
+			    attr=read_val_8(0x0b+i,values);
 			    if(attr&0x10) return_clus|=directory_bit;
                 temp8=0;    // forces a function exit
               }
