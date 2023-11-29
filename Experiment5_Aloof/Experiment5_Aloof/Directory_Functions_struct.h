@@ -17,7 +17,7 @@
 
 
 //----------------- Typedefs ----------------------------------------
-typedef struct
+typedef struct FS_values_t
 {
   uint8_t SecPerClus;
   uint8_t FATtype;

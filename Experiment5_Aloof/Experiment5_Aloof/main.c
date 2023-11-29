@@ -103,9 +103,10 @@ int main(void)
 	LEDS_off(LED0_PORT, LED0_PIN,ACTIVE_LOW);
 	
 	
-	uint8_t TempArr [4];
-	
-	mount_drive(*TempArr);
+	uint8_t TempArr [512];
+	FS_values_t FAT_INFO;
+	uint8_t error;
+	error=mount_drive(&FAT_INFO,TempArr);
 	
 	
 	

@@ -19,7 +19,8 @@ main.d main.o: .././main.c .././board.h \
  .././UART_Print.h .././print_memory.h .././Long_Serial_In.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdarg.h \
- .././SPI.h .././SDCard.h .././OLED.h .././SD_Read_Sector.h
+ .././SPI.h .././SDCard.h .././OLED.h .././SD_Read_Sector.h \
+ .././Directory_Functions_struct.h
 
 .././board.h:
 
@@ -78,3 +79,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\
 .././OLED.h:
 
 .././SD_Read_Sector.h:
+
+.././Directory_Functions_struct.h:

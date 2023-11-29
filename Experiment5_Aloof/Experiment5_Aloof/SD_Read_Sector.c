@@ -8,7 +8,8 @@
 #include "SDCard.h"
 #include "SD_Read_Sector.h"
 #include "Directory_Functions_struct.h"
-
+#include "print_memory.h"
+#include "UART_Print.h"
 uint8_t read_sector(uint32_t sector_number, uint16_t sector_size, uint8_t * array_for_data)
 {
 	uint8_t SDtype,error_flag=No_Disk_Error;
@@ -33,9 +34,8 @@ uint8_t read_sector(uint32_t sector_number, uint16_t sector_size, uint8_t * arra
 uint8_t read_value_8 (uint16_t offset, uint8_t array_name[])
 {
 	//Little Endian
-	uint32_t return_val;
-	return_val=*(array_name+offset);
-	return return_val;
+	uint8_t temp= array_name[offset];
+	return temp;
 }
 
 
@@ -43,12 +43,12 @@ uint8_t read_value_8 (uint16_t offset, uint8_t array_name[])
 uint16_t read_value_16 (uint16_t offset, uint8_t array_name[])
 {
 	//Little Endian
-	uint32_t return_val;
-	uint8_t temp;
-	return_val=*(array_name+offset);
-	return_val=return_val<<8;
-	temp= *(array_name+offset+0x01);
-	return_val|=temp;
+	uint16_t return_val=0;
+	for( uint16_t i = offset +1; i>= offset; i--)
+	{
+		return_val <<=8;
+		return_val |= array_name[i];
+	}
 	return return_val;
 }
 
@@ -86,41 +86,61 @@ uint32_t read32(uint16_t offset, uint8_t array_name[])
 }*/
 
 //DONE, please make sure that BPB is the right value, and that all the values are being read right
-uint8_t mount_drive(uint8_t array_name[])
+uint8_t mount_drive(FS_values_t *FAT_INFO,uint8_t array_name[])
 {
-	//Step 1: Find the BIOS Parameter Block (BPB)
-	read_sector(0x00,0x08, *array_name);
-	BPB = read_value_8(0x00,*array_name);
-	if(BPB != 0xE8 || BPB != 0xE9)
+	
+	uint32_t MBR;
+	uint32_t temp;
+	read_sector(0x00,512, array_name);
+	BPB = read_value_8(0,array_name);
+	if(BPB != 0xE8 && BPB != 0xE9)//it is most likely the MBR. if it is then use read 32 at offset 0x01C6
 	{
-		BPB = read_value_32(0x01C6,*array_name);
-		
-		if(BPB&0x00FF != 0xE8 || BPB&0x00FF != 0xE9)
+		MBR = read_value_32(0x01C6,array_name);
+		read_sector(MBR,512,array_name);
+		temp = read_value_8(0,array_name);
+		if(temp != 0xEB && temp!=0xE9)
 		{
 			return Disk_Error;
 		}
 	}
-	uint16_t RootEntCnt = read_value_16(RootEntryCountOFFSET, BPB);
-	uint16_t BytsPerSec = read_value_16(BytesPerSectorOFFSET, BPB);
-	uint16_t FATSize16 = read_value_16(FATsize16OFFSET, BPB);
-	uint32_t FATSize32 = read_value_32(FATSize32OFFSET, BPB);
-	
-	
-	//Step 2: Determine how many sectors are in the Root Dir.
-	RootDirSectors =(((RootEntCnt * 32) + BytsPerSec - 1)) / BytsPerSec;
-	
-	
-	//Step 3: Determine how many sectors are data sectors
-	if(FATSize16 != 0)
-	{
-		FATsz = FATSize16;
-	}
 	else
 	{
-		FATsz = FATSize32;
+		MBR=0;
 	}
-	uint16_t TotalSectors16 = read_value_16(TotalSectors16OFFSET, BPB);
-	uint16_t TotalSectors32 = read_value_16(TotalSectors16OFFSET, BPB);
+	//the array contains BRB now
+	
+	
+	uint16_t BytsPerSec = read_value_16(BytesPerSectorOFFSET, array_name);
+	
+	
+	
+	uint16_t FATSize16 = read_value_16(FATsize16OFFSET, array_name);
+	uint32_t FATSize32 = read_value_32(FATSize32OFFSET, array_name);
+	FATsz=FATSize32;
+	
+	if(FATSize16!= 0)	//this code only supports size 32
+		return FATSIZE16ERROR;
+		
+	FAT_INFO->FATtype = FAT32;
+	FAT_INFO->BytesPerSec=read_value_16(0x0B,array_name);
+	FAT_INFO->SecPerClus=read_value_8(0x0D,array_name);
+	
+	
+	
+	//Step 1: Determine how many sectors are in the Root Dir.
+	RootDirSectors =0;//on 32 it should always be 0
+	FAT_INFO->RootDirSecs=0;
+	
+	
+	//Step 2: Determine how many sectors are data sectors
+	
+	uint16_t TotalSectors16 = read_value_16(0x13, array_name);
+	uint16_t TotalSectors32 = read_value_32(0x20, array_name);
+	
+
+	
+	
+
 
 	if(TotalSectors16 != 0)
 	{
@@ -130,27 +150,41 @@ uint8_t mount_drive(uint8_t array_name[])
 	{
 		TotalSectors = TotalSectors32;
 	}
-	uint16_t RsvdSectorCount = read_value_16(RsvdSectorCountOFFSET, BPB);
-	NumFats = read_value_16(NumberFATsOFFSET, BPB);
+	
+	
+	uint16_t RsvdSectorCount = read_value_16(0x0E, array_name);
+	NumFats = read_value_8(0x10, array_name);
 	DataSec = TotalSectors - (RsvdSectorCount + (NumFats * FATsz) + RootDirSectors);
 		
+	
+	
 		
-	//Step 4: Determine the count of clusters and FAT type
-	uint16_t SectorsPerCluster = read_value_16(SectorsPerClusterOFFSET, BPB);
+	//Step 3: Determine the count of clusters and FAT type
+	uint16_t SectorsPerCluster = read_value_8(SectorsPerClusterOFFSET, array_name);
 	CountOfClusters = DataSec / SectorsPerCluster;
+	if(CountOfClusters<65525)//check to make sure that our cluster count is correct
+		return FATVAL16OR12;
 	
 	
-	//Step 5: Determine the first sector of the file allocation table
-	ThisFATSecNum = RsvdSectorCount + (FATSize32OFFSET / BytsPerSec);
+	//Step 4: Determine the first sector of the file allocation table
+	ThisFATSecNum = RsvdSectorCount + MBR;
+	FAT_INFO->StartofFAT=ThisFATSecNum;
 	
-	//Step 6: Determine the first sector of the data area
-	FirstDataSector = RsvdSectorCount + (NumFats * FATsz) + RootDirSectors;
+	//Step 5: Determine the first sector of the data area
+	FirstDataSector = RsvdSectorCount + (NumFats * FATSize32) + RootDirSectors + MBR;
+	FAT_INFO->FirstDataSec=FirstDataSector;
 	
-	
-	//Step 7: Determine the first sector of the Root Directory (FAT32)
-	uint16_t RootCluster = read_value_16(RootClusterOFFSET,BPB); 
+	//Step 6: Determine the first sector of the Root Directory (FAT32)
+	uint16_t RootCluster = read_value_32(RootClusterOFFSET,array_name); 
 	FirstSectorOfCluster = ((RootCluster-2) * SectorsPerCluster) + FirstDataSector;
-	
+	FAT_INFO->FirstRootDirSec=FirstSectorOfCluster;
 	
 	return 0;
+}
+
+
+uint32_t first_sect(FS_values_t *FAT_INFO,uint32_t clust_num){
+	if(clust_num==0)
+		return FAT_INFO->FirstRootDirSec;
+	return(((clust_num -2)*(FAT_INFO->SecPerClus))+(FAT_INFO->FirstDataSec));
 }
