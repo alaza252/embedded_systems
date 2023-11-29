@@ -11,7 +11,9 @@
 #include "board.h"
 #include "directory_functions.h"
 
-uint8_t print_file(FatInfo *fat_info, uint32_t file_cluster_num, uint8_t buffer[]);
+#define PRINT_FILE_READ_ERROR 1
+
+uint8_t print_file(FatInfo *fat_info, uint32_t file_first_cluster_num, uint8_t buffer[]);
 
 
 #endif

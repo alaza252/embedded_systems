@@ -110,7 +110,7 @@ uint8_t find_next_clust(FatInfo *fat_info, uint32_t clust_num, uint8_t arr[], ui
 	if (error != 0) {
 		return FIND_NEXT_CLUST_READ_ERROR;
 	}
-	uint32_t entry_offset = fat_offset % fat_info -> BytesPerSec; // TODO what is this even for?
+	uint32_t entry_offset = fat_offset % fat_info -> BytesPerSec;
 	
 	(*next_cluster_out) = read_val_32(entry_offset, arr) & 0x0FFFFFFF;
 	
