@@ -39,7 +39,8 @@ int main(void)
 // 	uart_transmit_string(UART1, export_print_buffer(), 0);
 	
 	//init UART
-	uart_init(UART1, 9600UL);
+	//uart_init(UART1, 9600UL);
+	uart_init(UART1, 57600UL);
 	
 	//init SPI
 	spi_master_init(SPI0, 400000UL);

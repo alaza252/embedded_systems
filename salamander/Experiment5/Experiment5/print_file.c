@@ -16,6 +16,7 @@
 
 uint8_t print_file(FatInfo *fat_info, uint32_t file_first_cluster_num, uint8_t buffer[]) {
 	uint8_t error;
+	uint8_t next_prompt = 16;
 
 	uint32_t cluster = file_first_cluster_num;
 	while (cluster != 0x0FFFFFFF) {
@@ -30,7 +31,20 @@ uint8_t print_file(FatInfo *fat_info, uint32_t file_first_cluster_num, uint8_t b
 			}
 			sprintf(export_print_buffer(), "Printing sector: %i (%lu) of cluster: %lu.\r\n", i, sector, cluster);
 			uart_transmit_string(UART1, export_print_buffer(), 0);
-			print_memory(buffer, fat_info->BytesPerSec);
+			//print_memory(buffer, fat_info->BytesPerSec);
+			
+			next_prompt--;
+			if (next_prompt == 0) {
+				next_prompt = 16;
+				sprintf(export_print_buffer(), "Continue? (Y/n)\r\n");
+				uart_transmit_string(UART1, export_print_buffer(), 0);
+				uint8_t continue_input = uart_receive(UART1);
+				if (continue_input == 'n') {
+					sprintf(export_print_buffer(), "Exiting!\r\n");
+					uart_transmit_string(UART1, export_print_buffer(), 0);
+					return 0;
+				}
+			}
 		}
 		error = find_next_clust(fat_info, cluster, buffer, &cluster);
 		if (error != 0) {
