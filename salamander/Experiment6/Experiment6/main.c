@@ -48,6 +48,10 @@ int main(void)
 	
 	//init LEDs
 	gpio_led_init(LED0_REG, LED0_PIN_MASK);
+	
+	
+	sprintf(export_print_buffer(), "Data req val: %i!\r\n", sta013_read_data_req());
+	uart_transmit_string(UART1, export_print_buffer(), 0);
 
 	SDInfo sd_info;
 	uint8_t sd_card_init_error = sd_card_init(&sd_info);

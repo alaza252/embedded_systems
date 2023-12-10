@@ -20,4 +20,6 @@ uint8_t sta013_init();
 
 void sta013_reset_pin_set(uint8_t bit);
 
+uint8_t sta013_read_data_req();
+
 #endif

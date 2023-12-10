@@ -44,6 +44,7 @@ uint8_t sta013_write_array(const uint8_t *array) {
 
 uint8_t sta013_init() {
 	gpio_output_init(STA013_RESET_REG, STA013_RESET_PIN_MASK);
+	gpio_input_init(STA013_DATA_REQ_REG, STA013_DATA_REQ_PIN_MASK, 0);
 	twi_master_init(STA013_TWI, 44100UL);
 	
 	sta013_reset_pin_set(0);
@@ -156,4 +157,9 @@ void sta013_reset_pin_set(uint8_t bit) {
 	} else {
 		gpio_output_set(STA013_RESET_REG, STA013_RESET_PIN_MASK);
 	}
+}
+
+
+uint8_t sta013_read_data_req() {
+	return gpio_input_read_pin(STA013_DATA_REQ_REG, STA013_DATA_REQ_PIN_MASK);
 }
