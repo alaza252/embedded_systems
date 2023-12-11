@@ -1,118 +1,135 @@
 /*
- * main.c
+ * FS_solution_struct.c
  *
- * Created: 10/16/2023 2:08:07 PM
- * Author : Sam Stockmann, Lavender Shannon
+ * Created: 10/5/2021 3:06:09 PM
+ * Author : Roger Younger
  */ 
 
-#include "board.h"
-#include "leds.h"
-#include "switch.h"
-#include "uart.h"
-#include "uart_print.h"
-#include "print_memory.h"
-#include "spi.h"
-#include "sd_spi.h"
-#include "sd.h"
-#include "long_serial_in.h"
-#include "print_memory.h"
-#include "sta013.h"
-#include "directory_functions.h"
-#include "read_sector.h"
-#include "mount_drive.h"
-#include "print_file.h"
 #include <avr/io.h>
+#include "board.h"
+#include "GPIO_Outputs.h"
+#include "LEDS.h"
+#include "UART.h"
 #include <util/delay.h>
+#include <avr/pgmspace.h>
+#include "UART_Print.h"
+#include "print_memory.h"
+#include "Long_Serial_In.h"
 #include <stdio.h>
+#include "SPI.h"
+#include "SDCard.h"
+#include "OLED.h"
+#include "Directory_Functions_struct.h"
+#include "File_System_struct.h"
+#include "TWI.h"
+#include "STA013_Config.h"
+#include "Temperature_Sensor.h"
+#include "Play_Song.h"
+
+
+const char test_string[28] PROGMEM = {"SD Initialization Program\n\r\0"};
+const char LSI_Prompt[16] PROGMEM = {"Enter block #: "};
+const char Complete[9] PROGMEM = {"  OK!\n\r\0"};
+const char High_Cap[15] PROGMEM = {"High Capacity\0"};
+const char Stnd_Cap[19] PROGMEM = {"Standard Capacity\0"};
+
+uint8_t buffer1_g[512];
+uint8_t buffer2_g[512];
+
 
 int main(void)
 {
-// 	//init UART
-// 	uart_init(UART1, 9600UL);
-// 	
-// 	//init LEDs
-// 	gpio_led_init(LED0_REG, LED0_PIN_MASK);
-// 	
-// 	sprintf(export_print_buffer(), "Error: %i!\r\n", err);
-// 	uart_transmit_string(UART1, export_print_buffer(), 0);
-
-	// init sta013
-	uint8_t err = sta013_init();
+	char temp8,error_flag;
+	uint32_t input32, Current_directory, num_entries, Entry_clus;
+	char *string_p;
+	FS_values_t * Drive_p;
+	LEDS_off(LED0_PORT, LED0_PIN,ACTIVE_LOW);
+	LEDS_init(LED0_PORT, LED0_PIN,ACTIVE_LOW);
+	LEDS_off(LED1_PORT, LED1_PIN,ACTIVE_LOW);
+	LEDS_init(LED1_PORT, LED1_PIN,ACTIVE_LOW);
+	LEDS_off(LED2_PORT, LED2_PIN,ACTIVE_LOW);
+	LEDS_init(LED2_PORT, LED2_PIN,ACTIVE_LOW);
+	LEDS_off(LED3_PORT, LED3_PIN,ACTIVE_LOW);
+	LEDS_init(LED3_PORT, LED3_PIN,ACTIVE_LOW);
+	UART_init(UART1,9600);
+	string_p=export_print_buffer();
+	copy_string_to_buffer(test_string,string_p,0);
+	UART_transmit_string(UART1,string_p,0);
+	TWI_Master_Init(STA013_TWI_Port,50000UL);
 	
-	//init UART
-	uart_init(UART1, 9600UL);
-// 	uart_init(UART1, 57600UL);
-	
-	//init SPI
-	spi_master_init(SPI0, 400000UL);
-	
-	//init LEDs
-	gpio_led_init(LED0_REG, LED0_PIN_MASK);
-	
-	
-	sprintf(export_print_buffer(), "Data req val: %i!\r\n", sta013_read_data_req());
-	uart_transmit_string(UART1, export_print_buffer(), 0);
-
-	SDInfo sd_info;
-	uint8_t sd_card_init_error = sd_card_init(&sd_info);
-	
-	if (sd_card_init_error != 0) {
-		sprintf(export_print_buffer(), "SD Card Init Error was: %i!\r\n", sd_card_init_error);
-		uart_transmit_string(UART1, export_print_buffer(), 0);
-		return 0;
+	LEDS_on(LED0_PORT, LED0_PIN,ACTIVE_LOW);
+	_delay_ms(100);
+	LEDS_off(LED0_PORT, LED0_PIN,ACTIVE_LOW);
+	//**** Make sure all SPI devices are disabled ****
+	SD_Card_CS_Inactive(SD_CS_Port, SD_CS_Pin);
+	SD_Card_CS_Init(SD_CS_Port, SD_CS_Pin);
+	OLED_SS_init();
+	error_flag=SPI_master_init(SPI0,400000);
+	if(error_flag!=no_errors)
+	{
+		while(1);
+		LEDS_on(LED1_PORT, LED1_PIN,ACTIVE_LOW);
 	}
-	sprintf(export_print_buffer(), "Card type value: %i, card capacity value: %i\r\n", sd_info.card_type, sd_info.capacity);
-	uart_transmit_string(UART1, export_print_buffer(), 0);
-	
-	//spi_master_init(SPI0, 25000000UL);
-	spi_master_init(SPI0, 8000000UL); // 8MHz is the maximum of our board, if we try to use a value higher than this, the function that calculates the divider will get very angry
-
-	FatInfo fat_info;
-	uint8_t data[512];
-	uint8_t error;
-	
-	//mount_drive(&fat_info, data);
-	error = mount_drive(&fat_info, data);
-	
-	if (error != 0) {
-		sprintf(export_print_buffer(), "Error while mounting drive: %i!\r\n", error);
-		uart_transmit_string(UART1, export_print_buffer(), 0);
+	OLED_init(OLED_SPI_Port);
+	OLED_set_line(OLED_SPI_Port,OLED_LINE_0);
+	copy_string_to_buffer(test_string,string_p,7);
+	OLED_transmit_string(OLED_SPI_Port,string_p,7);
+	error_flag=SD_Card_Init();
+	if(error_flag!=no_errors)
+	{
+		while(1);
+		LEDS_on(LED2_PORT, LED2_PIN,ACTIVE_LOW);
 	}
+	error_flag=SPI_master_init(SPI0,10000000);
+	copy_string_to_buffer(Complete,string_p,0);
+	OLED_transmit_string(OLED_SPI_Port,string_p,5);
+	OLED_set_line (OLED_SPI_Port,OLED_LINE_1);
+	temp8=Return_SD_Card_Type();
+	if(temp8==Standard_Capacity)
+	{
+		copy_string_to_buffer(Stnd_Cap,string_p,0);
+		OLED_transmit_string(OLED_SPI_Port,string_p,0);
+	}
+	else
+	{
+		copy_string_to_buffer(High_Cap,string_p,0);
+		OLED_transmit_string(OLED_SPI_Port,string_p,0);
+	}
+	LEDS_off(LED0_PORT, LED0_PIN,ACTIVE_LOW);
 	
-// 	
-// 	sprintf(export_print_buffer(), "Some values BytesPerSec: %i   SecPerClus: %i   StartofFAT: %lu\r\n", fat_info.BytesPerSec, fat_info.SecPerClus, fat_info.StartofFAT);
-// 	uart_transmit_string(UART1, export_print_buffer(), 0);
+	STA013_Init();
 	
-	
-	uint32_t current_working_directory_sector_num = fat_info.FirstRootDirSec;
-	
-	for (;;) {
-		uint16_t number_of_entries = print_directory(&fat_info, current_working_directory_sector_num, data);
-		uint16_t entry_number = (uint16_t) long_serial_input(UART1); // case to 16 bit because no one should give us a huge value (right?)
-		if (entry_number > number_of_entries) {
-			sprintf(export_print_buffer(), "Hey! entry number: %i is too big!!\r\n", entry_number);
-			uart_transmit_string(UART1, export_print_buffer(), 0);
-		} else {
-			uint32_t entry_cluster_value = read_dir_entry(&fat_info, current_working_directory_sector_num, entry_number, data);
-			uint32_t entry_cluster = entry_cluster_value & 0x0FFFFFFF;
-			uint32_t is_error = entry_cluster_value & 0x80000000;
-			uint32_t is_directory = entry_cluster_value & 0x10000000;
-			if (is_error != 0) {
-				sprintf(export_print_buffer(), "Error occurred!\r\n");
-				uart_transmit_string(UART1, export_print_buffer(), 0);
-			} else if (is_directory != 0) {
-				sprintf(export_print_buffer(), "Changing working directory!\r\n");
-				uart_transmit_string(UART1, export_print_buffer(), 0);
-				current_working_directory_sector_num = first_sect(&fat_info, entry_cluster);
-			} else {
-				// it is a file
-				sprintf(export_print_buffer(), "You selected a file!\r\n");
-				uart_transmit_string(UART1, export_print_buffer(), 0);
-				print_file(&fat_info, entry_cluster, data);
+	mount_drive(buffer1_g);
+	Drive_p=export_drive_values();
+	Current_directory=Drive_p->FirstRootDirSec;
+	while (1)
+	{
+			sprintf(string_p,"Current Directory = %lu\n\r",Current_directory);
+			UART_transmit_string(UART1,string_p,0);
+			num_entries=print_directory(Current_directory, buffer1_g);
+			sprintf(string_p,"Enter Selection = ");
+			UART_transmit_string(UART1,string_p,0);
+			input32=(uint16_t)long_serial_input(UART1);
+			if(input32<=num_entries)
+			{
+				Entry_clus=read_dir_entry(Current_directory, input32, buffer1_g);
+				if((Entry_clus&directory_bit)==directory_bit)
+				{
+					Entry_clus&=0x0FFFFFFF;
+					Current_directory=first_sector(Entry_clus);
+				}
+				else
+				{
+					//open_file(Entry_clus, buffer1_g);
+					Play_Song(Entry_clus);
+				}
+				
 			}
-		}
+			else
+			{
+				sprintf(string_p,"Invalid Selection\n\r");
+				UART_transmit_string(UART1,string_p,0);
+			}
+			
 	}
-	
 }
-
-

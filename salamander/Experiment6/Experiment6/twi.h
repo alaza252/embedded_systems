@@ -1,36 +1,23 @@
-/*
- * twi.h
- *
- * Created: 11/7/2023 4:18:19 PM
- * Author: Sam Stockmann, Lavender Shannon
- */
-
-#ifndef TWI_H
-#define TWI_H
+#ifndef _TWI_H
+#define _TWI_H
 
 #include "board.h"
 
-#define TWI_INIT_INVALID_FREQ 1
-#define TWI_INVALID_DEV_ADDR 2
-#define TWI_UNEXPECTED_STATUS 3
-/** May be returned during twi_master_transmit to indicate the slack sent a NACK */
-#define TWI_WRITE_NACK_RECEIVED 4
 
 
-uint8_t twi_master_init(volatile TWI_t* addr, uint32_t i2c_freq);
 
-/**
- * This function reads from the TWI device
- *
- * @param arr Values are written to this as they are received
- */
-uint8_t twi_master_receive(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num_bytes, uint8_t *arr);
+#define no_errors (0)
+#define bus_busy_error (0x81)
+#define NACK_error (0x82)
+#define TWI_Clock_error (0x87)
 
-/**
- * This function writes to the TWI device
- *
- * @param arr An array of size num_bytes that will be read by this function and transmitted out
- */
-uint8_t twi_master_transmit(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num_bytes, uint8_t *arr);
+// ------ Public function prototypes -------------------------------
+uint8_t TWI_Master_Init(volatile TWI_t *TWI_addr, uint32_t I2C_FREQ);
+uint8_t TWI_Master_Transmit(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32_t internal_addr, uint8_t int_addr_bytes, uint8_t num_bytes, uint8_t *send_array);
+uint8_t TWI_Master_Receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32_t internal_addr, uint8_t int_addr_bytes, uint8_t num_bytes, uint8_t *rec_array);
+
+
+
+
 
 #endif

@@ -1,31 +1,57 @@
 /*
- * leds.h
+ * LEDS.h
  *
- * Created: 9/13/2023 2:26:24 PM
- * Author: Sam Stockmann, Lavender Shannon
- */
+ * Created: 6/30/2020 11:42:34 AM
+ *  Author: youngerr
+ */ 
 
 
-#ifndef LEDS_H
-#define LEDS_H
+#ifndef _LEDS_H_
+#define _LEDS_H_
 
-#include "board.h"
+#define ACTIVE_LOW (0)
+#define ACTIVE_HIGH (1)
+
+/**************************************************************
+*   LEDS_init
+*   Inputs: pointer to a GPIO port struct,
+*           pin_mask to select GPIO pin(s)
+*           active selects when LED is on(active), ACTIVE_HIGH or ACTIVE_LOW
+*   Output: None
+**************************************************************
+*   Function: Switches the LED off (inactive)
+*             Enables the GPIO pin(s) as output(s)
+*   Caution: Must use the defined constants: ACTIVE_HIGH or ACTIVE_LOW
+***************************************************************/
+
+void LEDS_init(volatile GPIO_t * port_addr, uint8_t pin_mask, uint8_t active);
+
+/**************************************************************
+*   LEDS_on
+*   Inputs: pointer to a GPIO port struct,
+*           pin_mask to select GPIO pin(s)
+*           active selects when LED is on(active), ACTIVE_HIGH or ACTIVE_LOW
+*   Output: None
+**************************************************************
+*   Function: Switches the selected LEDs on (active)
+*
+*   Caution: Must use the defined constants: ACTIVE_HIGH or ACTIVE_LOW
+***************************************************************/
+void LEDS_on(volatile GPIO_t * port_addr, uint8_t pin_mask, uint8_t active);
+
+/**************************************************************
+*   LEDS_off
+*   Inputs: pointer to a GPIO port struct,
+*           pin_mask to select GPIO pin(s)
+*           active selects when LED is on(active), ACTIVE_HIGH or ACTIVE_LOW
+*   Output: None
+**************************************************************
+*   Function: Switches the selected LEDs off (inactive)
+*
+*   Caution: Must use the defined constants: ACTIVE_HIGH or ACTIVE_LOW
+***************************************************************/
+void LEDS_off(volatile GPIO_t * port_addr, uint8_t pin_mask, uint8_t active);
 
 
-/**
- * Initializes the given pin(s) to be LED outputs.
- */
-void gpio_led_init(volatile GpioPort_t *port_addr, uint8_t pin_mask);
 
-/**
- * Turns the LED on for the given pin(s)
- */
-void gpio_led_on(volatile GpioPort_t *port_addr, uint8_t pin_mask);
-
-/**
- * Turns the LED off for the given pin(s)
- */
-void gpio_led_off(volatile GpioPort_t *port_addr, uint8_t pin_mask);
-
-
-#endif
+#endif /* _LEDS_H_ */

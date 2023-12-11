@@ -1,174 +1,344 @@
-/*
- * twi.c
- *
- * Created: 11/7/2023 4:18:49 PM
- * Author: Sam Stockmann, Lavender Shannon
- */
+#include <avr/io.h>
+#include "board.h"
+#include "TWI.h"
+#include <stdio.h>
 
-#include "twi.h"
+#define START_sent (0x08)
+#define r_START_sent (0x10)
+#define SLA_W_ACK (0x18)
+#define SLA_W_NACK (0x20)
+#define DATA_SENT_ACK (0x28)
+#define DATA_SENT_NACK (0x30)
+#define ARB_LOST (0x38)
+#define SLA_R_ACK (0x40)
+#define SLA_R_NACK (0x48)
+#define DATA_RCV_ACK (0x50)
+#define DATA_RCV_NACK (0x58)
 
-uint8_t twi_master_init(volatile TWI_t* addr, uint32_t i2c_freq) {
-	uint16_t prescale = (((F_CPU / OSC_DIV) / i2c_freq) - 16) / (2UL * 255);
-	uint8_t prescale_code;
+/***********************************************************************
+DESC:    Sets the Prescale and Clock Rate Generator for the two wire interface
+INPUT: Desired SCL clock frequency
+RETURNS: Nothing
+CAUTION: 
+          
+************************************************************************/
+
+uint8_t TWI_Master_Init(volatile TWI_t *TWI_addr, uint32_t I2C_FREQ)
+{
+	uint32_t temp32;
+	uint8_t Prescale=0, return_val=0;
 	
-	if (prescale < 1) {
-		prescale_code = 0;
-		prescale = 1;
-	} else if (prescale < 4) {
-		prescale_code = 1;
-		prescale = 4;
-	} else if (prescale < 16) {
-		prescale_code = 2;
-		prescale = 16;
-	} else if (prescale < 64) {
-		prescale_code = 3;
-		prescale = 64;
-	} else {
-		return TWI_INIT_INVALID_FREQ;
+	temp32 = ((F_CPU/OSC_DIV)/I2C_FREQ)-16;
+	while(temp32>256)
+	{
+		temp32=temp32/4;
+		Prescale++;
 	}
+	if(Prescale>3)
+	{
+		return_val=TWI_Clock_error;
+	}
+	else
+	{
+		(TWI_addr->TWI_TWSR)=Prescale;
+		(TWI_addr->TWI_TWBR)=(uint8_t)temp32;
+	}
+	return return_val;
 	
-	uint8_t baud_val = (((F_CPU / OSC_DIV) / i2c_freq) - 16) / (2UL * prescale);
-	
-	addr -> BAUD_RATE = baud_val;
-	addr -> STATUS = prescale_code;
-	
-	return 0;
 }
 
+typedef enum {IDLE,DEV_ADDR,INT_ADDR,DATA_SEND,DATA_RCV,SEND_STOP,TWI_EXIT} TWI_state_t;
 
-void twint_wait(volatile TWI_t* addr) {
-	// wait for TWINT to be 1
-	while (((addr -> CONTROL) & (1 << TWINT)) == 0) {
-		// do nothing
-	}
-}
-void send_stop(volatile TWI_t* addr) {
-	addr -> CONTROL = ((1 << TWINT) | (1 << TWSTO) | (1 << TWEN));
+/***********************************************************************
+DESC:    Creates the signals required for transmitting bytes using
+         the I2C bus.
+RETURNS: Error Flag
+CAUTION: 
+          
+************************************************************************/
 
-	// wait for TWSTO to be 0
-	while (((addr -> CONTROL) & (1 << TWSTO)) != 0) {
-		// do nothing
-	}
-}
+uint8_t TWI_Master_Transmit(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32_t internal_addr, uint8_t int_addr_bytes, uint8_t num_bytes, uint8_t *send_array)
+{
+  uint8_t send_val, return_val, index, status;
+  TWI_state_t TWI_master_state;
+  volatile uint8_t temp8;
+  uint16_t timeout; 
+  TWI_master_state=IDLE;
+  return_val=no_errors;
+  index=0;
+  timeout=0;
+  // Send START condition;  
+  (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWSTA)|(1<<TWEN));   // TWIINT=1 to clear flag, TWSTA=1 for Start, TWEN=1
+  do 
+  {
+	 status=(TWI_addr->TWI_TWCR);
+	 timeout++;
+  } while (((status&0x80)==0)&&(timeout!=0));
+  temp8=((TWI_addr->TWI_TWSR)&0xF8);
+  if((temp8==START_sent)||(temp8==r_START_sent))   // Start sent
+  {
+	  TWI_master_state=DEV_ADDR;
+  }
+  else if(timeout==0)
+  {
+	  TWI_master_state=TWI_EXIT;
+	  return_val=bus_busy_error;
+  }
+  else
+  {
+	  TWI_master_state=TWI_EXIT;
+	  return_val=bus_busy_error;
+  }
 
-
-uint8_t twi_master_start(volatile TWI_t* addr, uint8_t dev_addr) {
-	if ((dev_addr & 0x80) != 0) {
-		return TWI_INVALID_DEV_ADDR;
-	}
-	
-	addr -> CONTROL = ((1 << TWINT) | (1 << TWEN) | (1 << TWSTA));
-	
-	twint_wait(addr);
-	
-	uint8_t status = (addr -> STATUS) & 0xF8;
-	
-	if ((status != 0x08) && (status != 0x10)) { // if the status is not a start sent and the status is not a repeated start
-		send_stop(addr);
-		return TWI_UNEXPECTED_STATUS;
-	}
-	
-	return 0;
-}
-
-
-uint8_t twi_master_receive(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num_bytes, uint8_t *arr) {
-	uint8_t start_err = twi_master_start(addr, dev_addr);
-	
-	if (start_err != 0) {
-		return start_err;
-	}
-	
-	addr -> DATA = (dev_addr << 1) | 1; // LSB will be 1 for read
-	addr -> CONTROL = ((1 << TWINT) | (1 << TWEN));
-	twint_wait(addr);
-	
-	uint8_t status;
-	status = (addr -> STATUS) & 0xF8;
-	
-	if (status != 0x40) { // if the status is not a SLA+R sent, ACK received
-		send_stop(addr);
-		return TWI_UNEXPECTED_STATUS;
-	}
-	
-	uint16_t bytes_left = num_bytes;
-	
-	uint16_t index = 0;
-	
-	while (bytes_left > 0) {
-		if (bytes_left == 1) {
-			addr -> CONTROL = ((1 << TWINT) | (0 << TWEA) | (1 << TWEN)); // send NACK, no more bytes to send
-		} else {
-			addr -> CONTROL = ((1 << TWINT) | (1 << TWEA) | (1 << TWEN)); // send ACK, more bytes to send
+  if(TWI_master_state==DEV_ADDR)
+  {
+	  send_val=device_addr<<1; // lsb is 0 for W
+	  (TWI_addr->TWI_TWDR)=send_val;
+	  (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWEN));   // TWIINT=1 to clear flag, TWEN=1
+	  do
+	  {
+		  status=(TWI_addr->TWI_TWCR);
+	  } while ((status&0x80)==0);
+	  temp8=((TWI_addr->TWI_TWSR)&0xF8);
+	  if(temp8==SLA_W_ACK)   // SLA+W sent, ACK received
+	  {
+		  if(int_addr_bytes!=0)
+		  {
+		     TWI_master_state=INT_ADDR;
+			 index=5-int_addr_bytes;
+		  }
+		  else if(num_bytes!=0)
+		  {
+			 TWI_master_state=DATA_SEND;
+		  }
+		  else
+		  {
+			  TWI_master_state=SEND_STOP;
+		  }
+	  }
+	  else if(temp8==SLA_W_NACK)  // SLA+W sent, NACK received
+	  {
+		  TWI_master_state=SEND_STOP;
+		  return_val=NACK_error;
+	  }
+	  else if(temp8==ARB_LOST)  // Arbitration lost
+	  {
+		  (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWEN));   // TWIINT=1 to clear flag, TWEN=1
+		  TWI_master_state=TWI_EXIT;
+		  return_val=bus_busy_error;
+	  } 
+  }
+  
+  /**** Send Internal Address *****/
+     while(TWI_master_state==INT_ADDR)
+     {
+	    send_val=(uint8_t)(internal_addr>>(8*(4-index)));
+	    index++;
+	    (TWI_addr->TWI_TWDR)=send_val;
+	    (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWEN));   // TWIINT=1 to clear flag, TWEN=1
+		do
+		{
+		   status=(TWI_addr->TWI_TWCR);
+		} while ((status&0x80)==0);
+		temp8=((TWI_addr->TWI_TWSR)&0xF8);
+		if(temp8==DATA_SENT_ACK)  // Data sent, ACK received
+		{
+			if(index==5 /*int_addr_bytes_max*/)
+			{
+				if(num_bytes!=0)
+				{
+					TWI_master_state=DATA_SEND;
+				}
+				else
+				{
+					TWI_master_state=SEND_STOP;
+				}
+				
+			}   
 		}
-
-		twint_wait(addr);
-		status = (addr -> STATUS) & 0xF8;
-		
-		if (status == 0x50 || status == 0x58) { // we have received a byte, and we have either sent an ACK or a NACK
-			arr[index] = addr -> DATA;
-		} else {
-			send_stop(addr);
-			return TWI_UNEXPECTED_STATUS;
+		else if(temp8==DATA_SENT_NACK)  // Data sent, NACK received
+		{
+		   TWI_master_state=SEND_STOP;
+		    return_val=NACK_error;
 		}
-		if (status == 0x58) { // we have received a byte and have sent a NACK
-			// If we have sent a NACK, then we assume that bytes_left is 1, and after this iteration we have no more bytes to send
-			// So... We need to now send a stop and wait for that stop to be fully transmitted
-			send_stop(addr);
+		else if(temp8==ARB_LOST)  // Arbitration lost
+		{
+			(TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWEN));   // TWIINT=1 to clear flag, TWEN=1
+			TWI_master_state=IDLE;
+			return_val=bus_busy_error;
 		}
-
-		bytes_left--;
-		index++;
-	}
-	
-	return 0;
+     }
+  index=0;	  
+  /**** Send Data Bytes ******/
+     while(TWI_master_state==DATA_SEND)
+     {
+		 send_val=send_array[index];
+		 index++;
+		 (TWI_addr->TWI_TWDR)=send_val;
+		 (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWEN));   // TWIINT=1 to clear flag, TWEN=1
+		 do
+		 {
+		   status=(TWI_addr->TWI_TWCR);
+		 } while ((status&0x80)==0);    // Wait for TWINT to be set
+		 temp8=((TWI_addr->TWI_TWSR)&0xF8);
+		 if(temp8==DATA_SENT_ACK)  // Data sent, ACK received
+		 {
+			 if(num_bytes==index)
+			 {
+				 TWI_master_state=SEND_STOP;
+			 }
+			   
+		 }
+		 else if(temp8==DATA_SENT_NACK)  // Data sent, NACK received
+		 {
+			   TWI_master_state=SEND_STOP;
+			   return_val=NACK_error;
+		 }
+		 else if(temp8==ARB_LOST)  // Arbitration lost
+		 {
+			   (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWEN));   // TWIINT=1 to clear flag, TWEN=1
+			   TWI_master_state=TWI_EXIT;
+			   return_val=bus_busy_error;
+		 }
+	   }
+	   /**** Send Stop Condition ******/
+	   if(TWI_master_state==SEND_STOP)
+	   {
+		   (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWSTO)|(1<<TWEN));   // TWIINT=1 to clear flag, TWSTO=1 for Stop, TWEN=1
+		   do
+		   {
+			   status=(TWI_addr->TWI_TWCR);
+		   } while ((status&(1<<TWSTO))!=0); // Wait for the Stop flag to be cleared // Wait for the Stop flag to be cleared
+		   TWI_master_state=TWI_EXIT;
+	   }
+	   /***** TWI EXIT *****/
+	   if(TWI_master_state==TWI_EXIT)
+	   {
+		   TWI_master_state=IDLE;
+	   }
+       return return_val;
 }
 
-uint8_t twi_master_transmit(volatile TWI_t* addr, uint8_t dev_addr, uint16_t num_bytes, uint8_t *arr) {
-	uint8_t start_err = twi_master_start(addr, dev_addr);
+/***********************************************************************
+DESC:    Creates the signals required for receiving bytes using
+         the I2C bus.
+RETURNS: Error Flag
+CAUTION: 
+          
+************************************************************************/
 
-	if (start_err != 0) {
-		return start_err;
-	}
 
-	addr -> DATA = dev_addr << 1; // LSB will be 0 for read
-	addr -> CONTROL = ((1 << TWINT) | (1 << TWEN));
-	twint_wait(addr);
-
-	uint8_t status;
-	status = (addr -> STATUS) & 0xF8;
-
-	// 0x18 is shown in "TWI Master Transmit Status Codes"
-	if (status != 0x18) { // if the status is not a SLA+W sent, ACK received
-		send_stop(addr);
-		if (status == 0x20) { // SLA+W sent, NACK received
-			return TWI_WRITE_NACK_RECEIVED;
-		}
-		return TWI_UNEXPECTED_STATUS;
-	}
-
-	uint16_t index = 0;
-
-	while (index < num_bytes) {
-		// Unlike in the notes, when we enter an iteration of the loop, we assume that we should send a byte.
-		//   As you can see below, we check the status register AFTER sending a byte
-		addr -> DATA = arr[index];
-		addr -> CONTROL = ((1 << TWINT) | (1 << TWEN));
-
-		twint_wait(addr);
-		status = (addr -> STATUS) & 0xF8;
-
-		if (status != 0x28) { // 0x28 is the "data sent, ACK received" case (the "good" case), so we we don't get that, we need to check to see what we got
-			send_stop(addr);
-			if (status == 0x30) { // this is the "data sent, NACK received" case
-				return TWI_WRITE_NACK_RECEIVED;
-			}
-			return TWI_UNEXPECTED_STATUS;
-		}
-
-		index++;
-	}
-
-	return 0;
+uint8_t TWI_Master_Receive(volatile TWI_t *TWI_addr, uint8_t device_addr, uint32_t internal_addr, uint8_t int_addr_bytes, uint8_t num_bytes, uint8_t * rec_array)
+{
+  uint8_t temp8, send_val, return_val, index, status;
+  TWI_state_t TWI_master_state;
+  uint16_t timeout;
+  return_val=no_errors;
+  if(int_addr_bytes!=0)
+  {
+	  return_val=TWI_Master_Transmit(TWI_addr,device_addr,internal_addr, int_addr_bytes,0,&send_val);
+  }
+  index=0;
+  timeout=0;
+  // Send START
+  (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWSTA)|(1<<TWEN));   // TWIINT=1 to clear flag, TWSTA=1 for Start, TWEN=1
+  do
+  {
+	  status=(TWI_addr->TWI_TWCR);
+	  timeout++;
+  } while (((status&0x80)==0)&&(timeout!=0)); // Wait for Status flag to be set
+  temp8=((TWI_addr->TWI_TWSR)&0xF8);
+  if((temp8==START_sent)||(temp8==r_START_sent))   // Start or Repeated Start sent
+  {
+	  TWI_master_state=DEV_ADDR;
+  }
+  else if(timeout==0)
+  {
+	  TWI_master_state=TWI_EXIT;
+	  return_val=bus_busy_error;
+  }
+  else
+  {
+	  TWI_master_state=TWI_EXIT;
+	  return_val=bus_busy_error;
+  }
+  if(TWI_master_state==DEV_ADDR)
+  {
+	 send_val=((device_addr<<1)|0x01); // lsb is 1 for R
+	 (TWI_addr->TWI_TWDR)=send_val;
+	 (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWEN));   // TWIINT=1 to clear flag, TWEN=1
+	  do
+	  {
+		  status=(TWI_addr->TWI_TWCR);
+	  } while ((status&0x80)==0); // Wait for Status flag to be set
+	  temp8=((TWI_addr->TWI_TWSR)&0xF8);
+	  if(temp8==SLA_R_ACK)   // SLA+R sent, ACK received
+	  {
+		  TWI_master_state=DATA_RCV;
+	  }
+	  else if(temp8==SLA_R_NACK)
+	  {
+		   TWI_master_state=SEND_STOP;
+		   return_val=NACK_error;
+	  }
+	  else if(temp8==ARB_LOST)
+	  {
+		  TWI_master_state=TWI_EXIT;
+		  return_val=bus_busy_error;
+	  }
+  }
+  index=0;
+  while(TWI_master_state==DATA_RCV)
+  {
+	 if(num_bytes==1)
+	 {
+		 (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWEN));   // TWIINT=1 to clear flag, TWEA=0 for NACK, TWEN=1 
+	 }
+	 else
+	 {
+		 (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWEA)|(1<<TWEN));   // TWIINT=1 to clear flag, TWEA=1 for ACK, TWEN=1
+	 }
+     do
+	 {
+		status=(TWI_addr->TWI_TWCR);
+	  } while ((status&0x80)==0); // Wait for Status flag to be set
+	  temp8=((TWI_addr->TWI_TWSR)&0xF8);
+	  num_bytes--;
+	  rec_array[index]=(TWI_addr->TWI_TWDR);
+	  index++;
+	  if(temp8==DATA_RCV_ACK)   // Data byte received, ACK sent
+	  {
+	      // TWI_master_state=DATA_RCV;
+	  }
+	  else if(temp8==DATA_RCV_NACK)  // Data byte received, NACK sent
+	  {
+		  TWI_master_state=SEND_STOP;
+	  }
+	  else if(temp8==ARB_LOST)  // Arbitration lost
+	  {
+		  (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWEN));   // TWIINT=1 to clear flag, TWEN=1
+		   return_val=bus_busy_error;
+		   TWI_master_state=TWI_EXIT;
+      }
+   }
+   if(TWI_master_state==SEND_STOP)
+   {
+	  (TWI_addr->TWI_TWCR) = ((1<<TWINT)|(1<<TWSTO)|(1<<TWEN));   // TWIINT=1 to clear flag, TWSTO=1 for Stop, TWEN=1
+	  do
+	  {
+		  status=(TWI_addr->TWI_TWCR);
+	  } while ((status&(1<<TWSTO))!=0); // Wait for the Stop flag to be cleared // Wait for the Stop flag to be cleared
+	  TWI_master_state=TWI_EXIT;
+  }
+  /***** TWI EXIT *****/
+  if(TWI_master_state==TWI_EXIT)
+  {
+	  TWI_master_state=IDLE;
+  }
+  return return_val; 
 }
+ 
+ 
+
+
 
